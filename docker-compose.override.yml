@@ -18,8 +18,3 @@ services:
       - /app/node_modules
     depends_on:
       - gateway
-
-  ms_data:
-    build: ./ms_data
-    volumes:
-      - ./data:/data
