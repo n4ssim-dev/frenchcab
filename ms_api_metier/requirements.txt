@@ -1,11 +1,5 @@
-fastapi
-uvicorn[standard]
-python-dotenv
 pytest
-pydantic
-dijkstra
-requests
-numpy
-duckdb
-scikit-learn
+pyarrow
 pandas
+duckdb
+requests
