@@ -1,0 +1,29 @@
+services:
+  gateway:
+    image: flor3473/energia:gateway
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./node_gateway/.env
+    depends_on:
+      ms_api_metier:
+        condition: service_healthy
+
+  ms_api_metier:
+    image: flor3473/energia:ms_api_metier
+    ports:
+      - "8000:8000"
+
+  ms_front:
+    image: flor3473/energia:ms_front
+    ports:
+      - "4200:4200"
+    depends_on:
+      - gateway
+
+  ms_data:
+    image: duckdb/duckdb:latest
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./ms_data/.env
