@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "front": {
+    "ms_front": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "front:build:production"
+              "buildTarget": "ms_front:build:production"
             },
             "development": {
-              "buildTarget": "front:build:development"
+              "buildTarget": "ms_front:build:development"
             }
           },
           "defaultConfiguration": "development"
