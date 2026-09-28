@@ -5,12 +5,12 @@ from pathlib import Path
 RAW_DIR = Path(__file__).resolve().parent / "data" / "raw"
 
 
-def downloadData(base_dir=RAW_DIR):
+def downloadData(base_dir=RAW_DIR, mois="2026-07"):
     base_dir = Path(base_dir)
     base_dir.mkdir(parents=True, exist_ok=True)
 
-    url = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2026-07.parquet"
-    file_name = base_dir / "yellow_tripdata_2026-07.parquet"
+    url = f"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{mois}.parquet"
+    file_name = base_dir / f"yellow_tripdata_{mois}.parquet"
 
     print(f"Téléchargement de {file_name.name}...")
     response = requests.get(url)
