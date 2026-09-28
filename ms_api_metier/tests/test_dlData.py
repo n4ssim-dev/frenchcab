@@ -1,9 +1,9 @@
 from unittest.mock import patch, MagicMock
-from ms_data.dlFichiers import downloadData
+from ms_api_metier.dlFichiers import downloadData
 
 def test_fichiersTelecharges(tmp_path):
     
-    with patch('ms_data.dlFichiers.requests.get') as mock_get:
+    with patch('ms_api_metier.dlFichiers.requests.get') as mock_get:
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.content = b"faux data"
