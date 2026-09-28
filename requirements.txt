@@ -1,3 +1,4 @@
 pytest
-requests
 pyarrow
+pandas
+duckdb
