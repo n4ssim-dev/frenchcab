@@ -5,9 +5,6 @@ services:
       - "3000:3000"
     env_file:
       - ./gateway/.env
-    depends_on:
-      ms_api_metier:
-        condition: service_healthy
 
   ms_api_metier:
     image: flor3473/energia:ms_api_metier
