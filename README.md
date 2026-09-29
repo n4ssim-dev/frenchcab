@@ -14,6 +14,7 @@ Executer le fichier dlFichiers.py présent dans le dossier ms_api_metier pour t�
 # traitement et chargement des données
 ```
 Executer le fichier etl.py présent dans le dossier ms_api_metier pour traiter les données et les envoyer vers yellow_taxi.db présent dans ms_api_metier/data.
+Traitement des incohérences : une course au dela de 320 miles sera supprimée, au dela de 7h également
 
 ```
 # Composition de yellow_taxi.db
