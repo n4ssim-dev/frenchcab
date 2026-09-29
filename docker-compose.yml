@@ -4,10 +4,9 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ./node_gateway/.env
-    depends_on:
-      ms_api_metier:
-        condition: service_healthy
+      - ./gateway/.env
+    environment:
+      - API_METIER_URL=http://ms_api_metier:8000
 
   ms_api_metier:
     image: flor3473/energia:ms_api_metier
@@ -21,9 +20,9 @@ services:
     depends_on:
       - gateway
 
-  ms_data:
-    image: duckdb/duckdb:latest
-    ports:
-      - "5432:5432"
-    env_file:
-      - ./ms_data/.env
+  # ms_data:
+  #   image: duckdb/duckdb:latest
+  #   ports:
+  #     - "5432:5432"
+  #   env_file:
+  #     - ./ms_data/.env

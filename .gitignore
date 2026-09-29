@@ -2,7 +2,6 @@
 .venv/
 __pycache__/
 ms_api_metier/data/
-
-
-
-
+node_modules/
+package-lock.json
+.pytest_cache/

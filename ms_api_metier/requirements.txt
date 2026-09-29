@@ -1,11 +1,8 @@
 fastapi
 uvicorn[standard]
-python-dotenv
 pytest
-pydantic
-dijkstra
-requests
-numpy
-duckdb
-scikit-learn
+httpx2
+pyarrow
 pandas
+duckdb
+requests
