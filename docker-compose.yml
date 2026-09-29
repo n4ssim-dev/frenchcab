@@ -5,6 +5,8 @@ services:
       - "3000:3000"
     env_file:
       - ./gateway/.env
+    environment:
+      - API_METIER_URL=http://ms_api_metier:8000
 
   ms_api_metier:
     image: flor3473/energia:ms_api_metier

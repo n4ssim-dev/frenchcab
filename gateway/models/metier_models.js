@@ -1,13 +1,32 @@
-const COURSES_EXEMPLE = [
-  { id: 1, depart: "Paris", arrivee: "Orly", date: "2026-10-01T08:30:00", prix: 45 },
-  { id: 2, depart: "Lyon", arrivee: "Villeurbanne", date: "2026-10-02T14:00:00", prix: 18 },
-  { id: 3, depart: "Marseille", arrivee: "Aix-en-Provence", date: "2026-10-03T19:15:00", prix: 60 },
-];
+const API_METIER_URL = process.env.API_METIER_URL || "http://localhost:8000";
 
-function getCourses() {
-  return Promise.resolve({ data: COURSES_EXEMPLE });
+async function requeter(chemin, params = {}) {
+  const url = new URL(chemin, API_METIER_URL);
+  for (const [cle, valeur] of Object.entries(params)) {
+    if (valeur !== undefined) url.searchParams.set(cle, valeur);
+  }
+
+  const reponse = await fetch(url);
+  const data = await reponse.json().catch(() => null);
+
+  if (!reponse.ok) {
+    const erreur = new Error(`API métier : HTTP ${reponse.status}`);
+    erreur.response = { status: reponse.status, data };
+    throw erreur;
+  }
+
+  return { data };
+}
+
+function getCourses({ limit, offset } = {}) {
+  return requeter("/courses", { limit, offset });
+}
+
+function getCourse(id) {
+  return requeter(`/courses/${encodeURIComponent(id)}`);
 }
 
 module.exports = {
   getCourses,
+  getCourse,
 };
