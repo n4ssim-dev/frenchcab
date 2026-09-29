@@ -19,6 +19,7 @@ Executer le fichier etl.py présent dans le dossier ms_api_metier pour traiter l
 # Composition de yellow_taxi.db
 ```
 Base yellow_taxi.db (DuckDb) est composée de 2 tables, yellowtripdata comprenant toutes les courses et taxi_zones permettant de localiser les zones de prise en charge et de dépose des clients
+```
 
 # Pour lancer les tests
 ```
