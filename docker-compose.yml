@@ -1,6 +1,6 @@
 services:
   gateway:
-    image: flor3473/energia:gateway
+    image: flor3473/frenchcab:gateway
     ports:
       - "3000:3000"
     env_file:
@@ -9,12 +9,12 @@ services:
       - API_METIER_URL=http://ms_api_metier:8000
 
   ms_api_metier:
-    image: flor3473/energia:ms_api_metier
+    image: flor3473/frenchcab:ms_api_metier
     ports:
       - "8000:8000"
 
   ms_front:
-    image: flor3473/energia:ms_front
+    image: flor3473/frenchcab:ms_front
     ports:
       - "4200:4200"
     depends_on:
