@@ -133,22 +133,7 @@ def creer_db ():
                passenger_count, trip_distance, PULocationID, DOLocationID, total_amount
         FROM read_csv_auto('{Path(OUTPUT_PATH).as_posix()}', header=true)
     """)
-    # 
-
-    # con.execute(f"""
-    # CREATE OR REPLACE TABLE yellowtripdata AS
-    # SELECT *
-    # FROM read_csv_auto(
-    #     '{Path(OUTPUT_PATH).as_posix()}',
-    #     header=true
-    # )
-    # """)
-    # # Vérification
-    # nb = con.execute("SELECT COUNT(*) FROM yellowtripdata").fetchone()[0]
-    # print(f"\n{nb} lignes importées lors de la génération de la base.")
-
-
-
+    
 def main():
     df = lire_csv()
     df = nettoyage_csv(df)
