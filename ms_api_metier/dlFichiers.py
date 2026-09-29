@@ -3,14 +3,33 @@ import pandas as pd
 from pathlib import Path
 
 RAW_DIR = Path(__file__).resolve().parent / "data" / "raw"
+CSV_PATH = "RAW_DIR/yellow_tripdata_2026-07.csv"
 
 
-def downloadData(base_dir=RAW_DIR):
+def downloadData(base_dir=RAW_DIR, mois="2026-07"):
     base_dir = Path(base_dir)
     base_dir.mkdir(parents=True, exist_ok=True)
 
-    url = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2026-07.parquet"
-    file_name = base_dir / "yellow_tripdata_2026-07.parquet"
+    url = f"https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{mois}.parquet"
+    file_name = base_dir / f"yellow_tripdata_{mois}.parquet"
+
+    print(f"Téléchargement de {file_name.name}...")
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        file_name.write_bytes(response.content)
+        print("Téléchargement terminé !")
+        return file_name
+
+    print(f"Impossible de télécharger {file_name.name} (HTTP {response.status_code})")
+    return None
+
+def downloadData2(base_dir=RAW_DIR):
+    base_dir = Path(base_dir)
+    base_dir.mkdir(parents=True, exist_ok=True)
+
+    url = "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+    file_name = base_dir / "taxi_zone_lookup.csv"
 
     print(f"Téléchargement de {file_name.name}...")
     response = requests.get(url)
@@ -37,3 +56,4 @@ if __name__ == "__main__":
     fichier = downloadData()
     if fichier:
         convertCsv(fichier)
+    downloadData2()
