@@ -1,18 +1,77 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: CI
+run-name: Tests de la PR ${{ github.head_ref }} vers ${{ github.base_ref }}
+
+on:
+  pull_request:
+    branches: [dev]
+
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
-  Explore-GitHub-Actions:
+  # Détecte quels microservices ont été modifiés dans la PR
+  changements:
     runs-on: ubuntu-latest
+    outputs:
+      ms_api_metier: ${{ steps.filtre.outputs.ms_api_metier }}
+      gateway: ${{ steps.filtre.outputs.gateway }}
+      ms_front: ${{ steps.filtre.outputs.ms_front }}
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v6
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - uses: actions/checkout@v6
+      - uses: dorny/paths-filter@v3
+        id: filtre
+        with:
+          filters: |
+            ms_api_metier:
+              - 'ms_api_metier/**'
+            gateway:
+              - 'gateway/**'
+            ms_front:
+              - 'ms_front/**'
+
+  ms_api_metier:
+    needs: changements
+    if: needs.changements.outputs.ms_api_metier == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ms_api_metier
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - run: pip install -r requirements.txt
+      - run: pytest
+
+  gateway:
+    needs: changements
+    if: needs.changements.outputs.gateway == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gateway
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - run: npm ci
+      # Pas encore de tests : on vérifie au moins la syntaxe de chaque fichier
+      - run: find . -name "*.js" -not -path "./node_modules/*" -print0 | xargs -0 -n1 node --check
+
+  ms_front:
+    needs: changements
+    if: needs.changements.outputs.ms_front == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ms_front
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npx ng test --watch=false
