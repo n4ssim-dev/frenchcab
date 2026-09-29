@@ -1,0 +1,13 @@
+<aside class="sidebar" [class.reduite]="!ouvert">
+  <button class="toggle" (click)="basculer()">
+    {{ ouvert ? '«' : '»' }}
+  </button>
+
+  <nav>
+    @for (lien of liens; track lien.chemin) {
+      <a [routerLink]="lien.chemin" routerLinkActive="actif">
+        {{ ouvert ? lien.label : lien.label[0] }}
+      </a>
+    }
+  </nav>
+</aside>
