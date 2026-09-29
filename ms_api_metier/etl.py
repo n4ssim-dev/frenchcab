@@ -83,7 +83,34 @@ def nettoyage_csv(df):
         nb_lignes_apres = len(df)
 
 
-    df_rejets_total = pd.concat([df_rejets_doublons, df_rejets_date_manquante, df_rejets_date_manquante2, df_rejets_date_futur,df_rejets_date_futur2, df_rejets_date_futur], ignore_index=True)
+    print("\n5 : Suppression distances incohérentes")
+    print("-" * 40)
+    nb_lignes_avant = len(df)
+    print(f"\nNombre de données : {nb_lignes_avant}")
+    distance = df["trip_distance"] > 320
+    df_rejets_distance = df[distance].copy()
+    df_rejets_distance["motif_rejet"] = "distance incohérente"
+    df = df[df["trip_distance"] <= 320]
+    print(f"\nNombre de lignes supprimées : {nb_lignes_avant - len(df)}")
+
+
+    print("\n6 : Suppression durées incohérentes")
+    print("-" * 40)
+    nb_lignes_avant = len(df)
+    print(f"\nNombre de données : {nb_lignes_avant}")
+    df["tpep_pickup_datetime"] = pd.to_datetime(df["tpep_pickup_datetime"])
+    df["tpep_dropoff_datetime"] = pd.to_datetime(df["tpep_dropoff_datetime"])
+    duree = df["tpep_dropoff_datetime"] - df["tpep_pickup_datetime"]
+    delta_duree = duree > pd.Timedelta(hours=7)
+    df_rejets_duree = df[delta_duree].copy()            
+    df_rejets_duree["motif_rejet"] = "durée incohérente"
+    df = df[~delta_duree].copy()              
+    print(f"\nNombre de lignes supprimées : {nb_lignes_avant - len(df)}")
+    
+    
+    
+
+    df_rejets_total = pd.concat([df_rejets_doublons, df_rejets_distance, df_rejets_duree, df_rejets_date_manquante, df_rejets_date_manquante2, df_rejets_date_futur,df_rejets_date_futur2], ignore_index=True)
     df_rejets_total.to_csv(dossier_sortie / REJETS_PATH, index=False)
 
     
