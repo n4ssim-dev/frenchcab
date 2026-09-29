@@ -1,0 +1,40 @@
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background: #1f2937;
+  color: white;
+  padding: 1rem;
+  transition: width 0.3s;
+}
+
+.sidebar.reduite {
+  width: 60px;
+}
+
+.toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+nav a {
+  color: #d1d5db;
+  text-decoration: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+nav a:hover,
+nav a.actif {
+  background: #374151;
+  color: white;
+}
