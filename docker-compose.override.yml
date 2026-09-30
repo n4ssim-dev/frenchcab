@@ -1,0 +1,20 @@
+services:
+
+  gateway:
+    build: ./gateway
+    volumes:
+      - ./gateway:/app
+      - /app/node_modules
+
+  ms_api_metier:
+    build: ./ms_api_metier
+    volumes:
+      - ./ms_api_metier:/app
+
+  ms_front:
+    build: ./ms_front
+    volumes:
+      - ./ms_front:/app
+      - /app/node_modules
+    depends_on:
+      - gateway
