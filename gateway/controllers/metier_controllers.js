@@ -1,4 +1,5 @@
 const metier_models = require("../models/metier_models");
+const apiURL = process.env.API_METIER_URL
 
 
 function repondreErreur(res, error) {
@@ -12,8 +13,8 @@ function repondreErreur(res, error) {
 
 async function getCourses(req, res) {
   try {
-    const { limit, offset } = req.query;
-    const reponse = await metier_models.getCourses({ limit, offset });
+    const { limit, offset,date } = req.query;
+    const reponse = await metier_models.getCourses({ limit, offset,date });
 
     res.status(200).json({
       success: true,

@@ -11,11 +11,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class Sidebar {
   ouvert = true;
 
-  liens = [
-    { label: 'Accueil', chemin: '/accueil' },
-    { label: 'Recherche de course', chemin: '/patients' },
-    { label: 'Liste des courses', chemin: '/parametres' }
-  ];
+liens = [
+  { label: 'Accueil', chemin: '/accueil' },
+  { label: 'Recherche de course', chemin: '/recherche-course' },
+  { label: 'Liste des courses', chemin: '/liste-courses' }
+];
 
   basculer() {
     this.ouvert = !this.ouvert;
