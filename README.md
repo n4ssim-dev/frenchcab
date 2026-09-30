@@ -150,3 +150,29 @@ Base yellow_taxi.db (DuckDb) est composée de 2 tables, yellowtripdata comprenan
 ```
 python -m pytest
 ```
+
+# CI/CD
+## CI
+
+## CD
+Une vérification des images docker a été programmée à 11h et à 15h. A ces horaires, le script suivant est executé sur la machine virtuelle : 
+```
+    #!/bin/bash
+
+    set -e
+
+    echo "=== Déploiement FrenchCab ==="
+
+    cd /home/groupe3/frenchcab
+
+    echo "=== Récupération des nouvelles images ==="
+    docker compose pull
+
+    echo "=== Redémarrage des services ==="
+    docker compose up -d
+
+    echo "=== Vérification des conteneurs ==="
+    docker compose ps
+
+    echo "=== Déploiement terminé ==="
+```
