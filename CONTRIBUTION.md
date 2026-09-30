@@ -12,7 +12,19 @@ Les branches devront toutes suivre cette appelation et être écrites en minuscu
 ## Commits
 Les commits devront être précédés de ces balises écrites en miniscule et sans ponctuation :
 
-```<feat>``` ```<fix>``` ```<docs>``` ```<chores>```
+```<feat>```, ```<fix>```, ```<docs>```, ```<chore>```, ...
+
+Types utilisés :
+```
+feat: nouvelle fonctionnalité
+fix: correction d'un bug
+test: ajout ou modification de tests
+docs: documentation
+refactor: modification interne sans changement fonctionnel
+ci: modification CI/CD
+chore: maintenance
+```
+
 
 ## Dépôt distant
 - Avant chaque push sur le dépot distant, il devra être effectué un pull de la branche de développement principale (```dev```).
