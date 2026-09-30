@@ -48,11 +48,18 @@ def lignesEnDict(resultat):
 def listerCourses(
     limit: int = Query(100, ge=1, le=1000),
     offset: int = Query(0, ge=0),
+    date: str | None = Query(None, pattern=r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$")
 ):
+    where = ""
+    params =[]
+    if date is not None :
+        where = ("WHERE CAST (t.tpep_pickup_datetime AS date)  = ?")
+        params.append(date)
     with connexion() as con:
-        total = con.execute("SELECT COUNT(*) FROM yellowtripdata").fetchone()[0]
+        total = con.execute(f"SELECT COUNT(*) FROM yellowtripdata as t " \
+        f"{where}",params).fetchone()[0]
         courses = lignesEnDict(
-            con.execute(f"{SELECT_COURSES} ORDER BY t.rowid LIMIT ? OFFSET ?", [limit, offset])
+            con.execute(f"{SELECT_COURSES}{where} ORDER BY t.rowid LIMIT ? OFFSET ?", params+[limit, offset])
         )
     return {"total": total, "limit": limit, "offset": offset, "courses": courses}
 
