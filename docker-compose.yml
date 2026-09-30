@@ -16,6 +16,6 @@ services:
   ms_front:
     image: ${DOCKERHUB_USERNAME:?DOCKERHUB_USERNAME manquant dans .env}/frenchcab:ms_front
     ports:
-      - "${FRONT_PORT:-80}:80"
+      - "${FRONT_PORT:-4200}:80"
     depends_on:
       - gateway
