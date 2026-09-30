@@ -1,9 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { CoursesTable } from '../courses-table/courses-table';
 
 @Component({
-  imports: [],
   selector: 'app-recherche-course',
-  styleUrl: './recherche-course.scss',
+  imports: [CoursesTable],
   templateUrl: './recherche-course.html',
+  styleUrl: './recherche-course.scss',
 })
-export class RechercheCourse {}
+export class RechercheCourse {
+  /** Date choisie au format AAAA-MM-JJ (celui de <input type="date">). */
+  date = signal<string | null>(null);
+
+  choisir(valeur: string) {
+    this.date.set(valeur || null);
+  }
+}

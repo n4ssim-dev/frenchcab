@@ -1,0 +1,52 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
+
+// Adresse du gateway et mot de passe (GATEWAY_PASSWORD du .env du gateway).
+const GATEWAY_URL = 'http://localhost:3000/metier';
+const GATEWAY_PASSWORD = '5';
+
+export interface Course {
+  id: number;
+  vendor_id: number;
+  depart: string;
+  arrivee: string;
+  passagers: number;
+  distance: number;
+  zone_depart: string | null;
+  quartier_depart: string | null;
+  zone_arrivee: string | null;
+  quartier_arrivee: string | null;
+  montant: number;
+}
+
+export interface PageCourses {
+  total: number;
+  limit: number;
+  offset: number;
+  courses: Course[];
+}
+
+interface ReponseGateway {
+  success: boolean;
+  message: string;
+  reponse: PageCourses;
+}
+
+@Injectable({ providedIn: 'root' })
+export class CoursesService {
+  private http = inject(HttpClient);
+
+  getCourses(limit: number, offset: number, date: string | null): Observable<PageCourses> {
+    let params = new HttpParams().set('limit', limit).set('offset', offset);
+    if (date) {
+      params = params.set('date', date); // format AAAA-MM-JJ
+    }
+    return this.http
+      .get<ReponseGateway>(`${GATEWAY_URL}/courses`, {
+        params,
+        headers: { 'x-api-password': GATEWAY_PASSWORD },
+      })
+      .pipe(map((r) => r.reponse));
+  }
+}
