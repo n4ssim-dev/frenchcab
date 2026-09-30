@@ -1,1 +1,12 @@
-<p>recherche-course works!</p>
+<h1>Recherche de course</h1>
+
+<div class="recherche">
+  <label for="date">Date du trajet</label>
+  <input id="date" type="date" #champ [value]="date() ?? ''" (input)="choisir(champ.value)" />
+</div>
+
+@if (date()) {
+  <app-courses-table [date]="date()" />
+} @else {
+  <p class="aide">Choisis une date pour afficher les courses de ce jour (données de juillet 2026).</p>
+}

@@ -18,8 +18,8 @@ async function requeter(chemin, params = {}) {
   return { data };
 }
 
-function getCourses({ limit, offset } = {}) {
-  return requeter("/courses", { limit, offset });
+function getCourses({ limit, offset,date } = {}) {
+  return requeter("/courses", { limit, offset,date });
 }
 
 function getCourse(id) {

@@ -7,5 +7,5 @@ export const routes: Routes = [
   { path: '', redirectTo: 'accueil', pathMatch: 'full' },
   { path: 'accueil', component: Accueil },
   { path: 'recherche-course', component: RechercheCourse },
-  { path: 'liste-courses', component: ListeCourses }
+  { path: 'liste-courses', component: ListeCourses },
 ];
