@@ -12,7 +12,10 @@ services:
       - ./ms_api_metier:/app
 
   ms_front:
-    build: ./ms_front
+    build:
+      context: ./ms_front
+      args:
+        BUILD_CONFIG: development
     volumes:
       - ./ms_front:/app
       - /app/node_modules

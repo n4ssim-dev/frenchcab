@@ -57,3 +57,16 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+Si depuis ton navigateur, la VM (20.19.124.235) ne répond pas sur les ports 4200 et 8000 (ERR_CONNECTION_TIMED_OUT) : le pare-feu de la VM ne laisse passer que le SSH. Les services tournent pourtant bien, puisque curl http://localhost:8000/docs répond 200 depuis la VM.
+
+## Accéder à FrenchCab sur la VM : pare-feu et tunnel SSH
+
+Pour y accéder malgré tout, on utilise un tunnel SSH, ouvre un terminal vierge et tape:
+ssh -L 4200:localhost:4200 -L 3000:localhost:3000 groupe3@20.19.124.235
+
+Puis rentre le mdp du SSH.
+
+Ensuite ouvre http://localhost:4200. La solution durable c'est d'ouvrir le port 4200 (et le 3000 pour le gateway) dans le pare-feu. 
+ 
+ Attention il ne faut pas exposer le 8000, dont les routes /donnees/* n'ont pas d'authentification.

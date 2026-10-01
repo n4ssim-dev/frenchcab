@@ -9,8 +9,9 @@ RUN npm ci
 # Copie du code source
 COPY . .
 
-# Build Angular en production
-RUN npm run build
+# Build Angular : production par défaut (API https), development en local (API localhost)
+ARG BUILD_CONFIG=production
+RUN npm run build -- --configuration ${BUILD_CONFIG}
 
 
 FROM nginx:alpine

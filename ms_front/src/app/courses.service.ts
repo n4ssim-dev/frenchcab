@@ -1,9 +1,10 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
+import { environment } from '../environments/environment';
 
-// Adresse du gateway et mot de passe (GATEWAY_PASSWORD du .env du gateway).
-const GATEWAY_URL = 'http://localhost:3000/metier';
+// Adresse du gateway (selon l'environnement de build) et mot de passe (GATEWAY_PASSWORD du .env du gateway).
+const GATEWAY_URL = environment.gatewayUrl;
 const GATEWAY_PASSWORD = '5';
 
 export interface Course {
