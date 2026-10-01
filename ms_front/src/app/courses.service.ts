@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
 // Adresse du gateway et mot de passe (GATEWAY_PASSWORD du .env du gateway).
-const GATEWAY_URL = 'http://localhost:3000/metier';
+const GATEWAY_URL = 'https://api3.valentinduflot.fr/metier';
 const GATEWAY_PASSWORD = '5';
 
 export interface Course {
