@@ -14,7 +14,8 @@ export class Sidebar {
 liens = [
   { label: 'Accueil', chemin: '/accueil' },
   { label: 'Recherche de course', chemin: '/recherche-course' },
-  { label: 'Liste des courses', chemin: '/liste-courses' }
+  { label: 'Liste des courses', chemin: '/liste-courses' },
+  { label: 'Prédiction de durée', chemin: '/prediction' }
 ];
 
   basculer() {
