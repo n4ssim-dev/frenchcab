@@ -6,3 +6,5 @@ pyarrow
 pandas
 duckdb
 requests
+matplotlib
+scikit-learn
