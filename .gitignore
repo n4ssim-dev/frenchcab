@@ -4,3 +4,4 @@ __pycache__/
 ms_api_metier/data/
 node_modules/
 .pytest_cache/
+ms_api_metier/models/
