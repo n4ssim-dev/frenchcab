@@ -87,7 +87,7 @@ if __name__ == "__main__":
     exemples = pd.DataFrame([
         {"pickup": "2026-07-15 18:10", "id_location_depart": 162,
          "id_location_arrivee": 236, "distance": 3.2},
-        {"pickup": "2026-07-15 06:45", "id_location_depart": 132,
+        {"pickup": "2026-07-17 8:35", "id_location_depart": 132,
          "id_location_arrivee": 230, "distance": 17.5, "nb_passagers": 2},
     ])
     exemples["duree_predite_min"] = predire_duree(exemples)
