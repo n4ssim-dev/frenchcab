@@ -34,6 +34,17 @@ interface ReponseGateway {
   reponse: PageCourses;
 }
 
+export interface DemandePrediction {
+  pickup: string;
+  id_location_depart: number;
+  id_location_arrivee: number;
+  distance: number;
+}
+
+export interface ResultatPrediction {
+  duree_predite_min: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CoursesService {
   private http = inject(HttpClient);
@@ -46,6 +57,14 @@ export class CoursesService {
     return this.http
       .get<ReponseGateway>(`${GATEWAY_URL}/courses`, {
         params,
+        headers: { 'x-api-password': GATEWAY_PASSWORD },
+      })
+      .pipe(map((r) => r.reponse));
+  }
+
+  predireDuree(demande: DemandePrediction): Observable<ResultatPrediction> {
+    return this.http
+      .post<{ reponse: ResultatPrediction }>(`${GATEWAY_URL}/predictions/duree`, demande, {
         headers: { 'x-api-password': GATEWAY_PASSWORD },
       })
       .pipe(map((r) => r.reponse));

@@ -146,7 +146,28 @@ Traitement des incohérences : une course au dela de 320 miles sera supprimée, 
 Base yellow_taxi.db (DuckDb) est composée de 2 tables, yellowtripdata comprenant toutes les courses et taxi_zones permettant de localiser les zones de prise en charge et de dépose des clients
 ```
 
+## Entrainement modèle
+```
+Executer le fichier train.py présent dans ms_api_metier pour lancer le ML en RandomForest (cela va prendre plusieurs minutes)
+```
+## Prédictions
+```
+Le fichier predict.py présent dans ms_api_metier permet d'obtenir des prédictions via la fonction predire_duree()
+
+Utilisation : 
+
+exemples = pd.DataFrame([
+        {"pickup": "2026-07-15 18:10", "id_location_depart": 162,
+         "id_location_arrivee": 236, "distance": 3.2} ])
+
+exemples["duree_predite_min"] = predire_duree(exemples)
+
+```
+
 ## Pour lancer les tests
+
+Depuis le repertoire ms_api_metier:
+
 ```
 python -m pytest
 ```

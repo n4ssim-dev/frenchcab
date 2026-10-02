@@ -53,7 +53,8 @@ def convertCsv(parquet_file):
 
 
 if __name__ == "__main__":
+    downloadData2()
     fichier = downloadData()
     if fichier:
         convertCsv(fichier)
-    downloadData2()
+    
