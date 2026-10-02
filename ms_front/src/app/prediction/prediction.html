@@ -1,0 +1,37 @@
+<h1>Prédiction de durée</h1>
+
+<form (ngSubmit)="predire()">
+  <label>
+    Départ (date et heure)
+    <input type="datetime-local" name="pickup" [(ngModel)]="pickup" />
+  </label>
+
+  <label>
+    Zone de départ (id)
+    <input type="number" name="depart" min="1" [(ngModel)]="depart" />
+  </label>
+
+  <label>
+    Zone d'arrivée (id)
+    <input type="number" name="arrivee" min="1" [(ngModel)]="arrivee" />
+  </label>
+
+  <label>
+    Distance (miles)
+    <input type="number" name="distance" min="0.1" step="0.1" [(ngModel)]="distance" />
+  </label>
+
+  <button type="submit" [disabled]="chargement()">Prédire</button>
+</form>
+
+@if (chargement()) {
+  <p>Calcul en cours…</p>
+}
+
+@if (erreur()) {
+  <p class="erreur">{{ erreur() }}</p>
+}
+
+@if (resultat() !== null) {
+  <p class="resultat">Durée estimée : <strong>{{ resultat() }} min</strong></p>
+}
