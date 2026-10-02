@@ -2,13 +2,16 @@ import pandas as pd
 from pathlib import Path
 import duckdb
 
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
+
 CSV_PATH = "ms_api_metier/data/raw/yellow_tripdata_2026-07.csv"
 OUTPUT_PATH = "ms_api_metier/data/yellow_tripdata_2026-07_propre.csv"
 dossier_sortie = Path("ms_api_metier/data/lignes_rejetees")
 dossier_sortie.mkdir(parents=True, exist_ok=True)
 REJETS_PATH = "yellow_taxi_lignes_rejetees.csv"
-SQL_DB = "ms_api_metier/data/yellow_taxi.db"
-ZONES_PATH = "ms_api_metier/data/raw/taxi_zone_lookup.csv"
+SQL_DB = DATA_DIR / "yellow_taxi.db"
+ZONES_CSV = DATA_DIR / "raw" / "taxi_zone_lookup.csv"
 
 
 def lire_csv():
@@ -148,13 +151,27 @@ def nettoyage_csv(df):
     return df
 
 
-def creer_db ():
+def creer_db(db_path=SQL_DB, zones_csv=ZONES_CSV, trajets_csv=None):
 
-    con = duckdb.connect(SQL_DB)
+    for nom, chemin in [("zones", zones_csv), ("trajets", trajets_csv)]:
+        if chemin is None or not Path(chemin).exists():
+            raise FileNotFoundError(f"Fichier {nom} introuvable : {chemin}")
+    zones = Path(zones_csv).as_posix()
+    trajets = Path(trajets_csv).as_posix()
+    con = duckdb.connect(str(db_path))
 
     con.execute("DROP TABLE IF EXISTS fait_trajets")
     con.execute("DROP TABLE IF EXISTS dim_temps")
     con.execute("DROP TABLE IF EXISTS dim_location")
+
+    con.execute(f"""
+CREATE OR REPLACE TEMP VIEW trajets_src AS
+SELECT * REPLACE (
+    CAST(tpep_pickup_datetime  AS TIMESTAMP) AS tpep_pickup_datetime,
+    CAST(tpep_dropoff_datetime AS TIMESTAMP) AS tpep_dropoff_datetime
+)
+FROM read_csv_auto('{trajets}')
+""")
 
 #Dim_location
     con.execute("""
@@ -165,13 +182,13 @@ def creer_db ():
         zone_service   VARCHAR
     )
     """)
-    con.execute("""
+    con.execute(f"""
     INSERT INTO dim_location
     SELECT LocationID,
            COALESCE(Borough, 'Inconnu'),
            COALESCE(Zone, 'Inconnu'),
            COALESCE(service_zone, 'Inconnu')
-    FROM read_csv_auto('ms_api_metier/data/raw/taxi_zone_lookup.csv')
+    FROM read_csv_auto('{zones}')
     """)
 
 #Dim temps
@@ -250,7 +267,7 @@ CREATE TABLE fait_trajets (
     montant_total          DOUBLE
 )
 """)
-    con.execute("""
+    con.execute(f"""
 INSERT INTO fait_trajets
 SELECT
     row_number() OVER (ORDER BY tpep_pickup_datetime),
@@ -268,7 +285,7 @@ SELECT
     fare_amount, extra, mta_tax, tip_amount, tolls_amount,
     improvement_surcharge, congestion_surcharge, Airport_fee,
     cbd_congestion_fee, total_amount
-FROM read_csv_auto('ms_api_metier/data/yellow_tripdata_2026-07_propre.csv')
+FROM trajets_src
 WHERE PULocationID IN (SELECT id_location FROM dim_location)
   AND DOLocationID IN (SELECT id_location FROM dim_location)
 """)
@@ -324,7 +341,7 @@ WHERE PULocationID IN (SELECT id_location FROM dim_location)
 def main():
     df = lire_csv()
     df = nettoyage_csv(df)
-    creer_db ()
+    creer_db (trajets_csv=OUTPUT_PATH)
     
     
 if __name__ == "__main__":

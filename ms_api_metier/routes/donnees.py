@@ -71,7 +71,11 @@ def lancerEtl(
         etl.ZONES_PATH = zones
 
         df = etl.nettoyage_csv(etl.lire_csv())
-        etl.creer_db()
+        etl.creer_db(
+    db_path=DATA_DIR / "yellow_taxi.db",
+    zones_csv=RAW_DIR / "taxi_zone_lookup.csv",
+    trajets_csv=DATA_DIR / "yellow_tripdata_2026-07_propre.csv",   
+)
 
     return {
         "mois": mois,

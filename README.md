@@ -165,6 +165,9 @@ exemples["duree_predite_min"] = predire_duree(exemples)
 ```
 
 ## Pour lancer les tests
+
+Depuis le repertoire ms_api_metier:
+
 ```
 python -m pytest
 ```
