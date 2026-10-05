@@ -5,9 +5,9 @@ import duckdb
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
-CSV_PATH = "ms_api_metier/data/raw/yellow_tripdata_2026-07.csv"
-OUTPUT_PATH = "ms_api_metier/data/yellow_tripdata_2026-07_propre.csv"
-dossier_sortie = Path("ms_api_metier/data/lignes_rejetees")
+CSV_PATH = "data/raw/yellow_tripdata_2026-07.csv"
+OUTPUT_PATH = "data/yellow_tripdata_2026-07_propre.csv"
+dossier_sortie = Path("data/lignes_rejetees")
 dossier_sortie.mkdir(parents=True, exist_ok=True)
 REJETS_PATH = "yellow_taxi_lignes_rejetees.csv"
 SQL_DB = DATA_DIR / "yellow_taxi.db"
