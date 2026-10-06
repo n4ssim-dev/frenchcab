@@ -341,7 +341,7 @@ WHERE PULocationID IN (SELECT id_location FROM dim_location)
 def main():
     df = lire_csv()
     df = nettoyage_csv(df)
-    creer_db (trajets_csv=OUTPUT_PATH)
+    creer_db(trajets_csv=OUTPUT_PATH)
     
     
 if __name__ == "__main__":
