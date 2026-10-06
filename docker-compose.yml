@@ -1,6 +1,7 @@
 services:
   gateway:
-    image: ${DOCKERHUB_USERNAME:?DOCKERHUB_USERNAME manquant dans .env}/frenchcab:gateway
+    #image: ${DOCKERHUB_USERNAME:?DOCKERHUB_USERNAME manquant dans .env}/frenchcab:gateway
+    build: ./gateway
     ports:
       - "3000:3000"
     env_file:
@@ -9,12 +10,15 @@ services:
       - API_METIER_URL=http://ms_api_metier:8000
 
   ms_api_metier:
-    image: ${DOCKERHUB_USERNAME:?DOCKERHUB_USERNAME manquant dans .env}/frenchcab:ms_api_metier
+    #image: ${DOCKERHUB_USERNAME:?DOCKERHUB_USERNAME manquant dans .env}/frenchcab:ms_api_metier
+    build: ./ms_api_metier
     ports:
       - "8000:8000"
 
   ms_front:
-    image: ${DOCKERHUB_USERNAME:?DOCKERHUB_USERNAME manquant dans .env}/frenchcab:ms_front
+    #image: ${DOCKERHUB_USERNAME:?DOCKERHUB_USERNAME manquant dans .env}/frenchcab:ms_front
+    build:
+      context: ./ms_front
     ports:
       - "${FRONT_PORT:-4200}:80"
     depends_on:
