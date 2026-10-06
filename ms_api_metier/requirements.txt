@@ -8,3 +8,5 @@ duckdb
 requests
 matplotlib
 scikit-learn
+joblib
+duckdb
