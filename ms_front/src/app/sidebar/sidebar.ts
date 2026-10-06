@@ -15,7 +15,8 @@ liens = [
   { label: 'Accueil', chemin: '/accueil' },
   { label: 'Recherche de course', chemin: '/recherche-course' },
   { label: 'Liste des courses', chemin: '/liste-courses' },
-  { label: 'Prédiction de durée', chemin: '/prediction' }
+  { label: 'Prédiction de durée', chemin: '/prediction' },
+  { label: 'Réservation', chemin: '/liste-reservations' }
 ];
 
   basculer() {
