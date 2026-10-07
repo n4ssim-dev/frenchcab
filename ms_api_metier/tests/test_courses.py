@@ -8,30 +8,33 @@ from main import app
 
 client = TestClient(app)
 
-
 @pytest.fixture
 def base(tmp_path):
     chemin = tmp_path / "yellow_taxi.db"
     con = duckdb.connect(str(chemin))
-    con.execute("CREATE TABLE taxi_zones (LocationID INTEGER, Borough VARCHAR, Zone VARCHAR, service_zone VARCHAR)")
-    con.execute("INSERT INTO taxi_zones VALUES (1, 'EWR', 'Newark Airport', 'EWR'), (2, 'Queens', 'Jamaica Bay', 'Boro Zone')")
+    # Mêmes tables que celles créées par etl.py (modèle en étoile)
+    con.execute("CREATE TABLE dim_location (id_location INTEGER, arrondissement VARCHAR, zone VARCHAR, zone_service VARCHAR)")
+    con.execute("INSERT INTO dim_location VALUES (1, 'EWR', 'Newark Airport', 'EWR'), (2, 'Queens', 'Jamaica Bay', 'Boro Zone')")
+    con.execute("CREATE TABLE dim_temps (id_temps BIGINT, date_heure TIMESTAMP, date DATE)")
+    con.execute("INSERT INTO dim_temps VALUES (202607011000, '2026-07-01 10:00:00', '2026-07-01')")
     con.execute("""
-        CREATE TABLE yellowtripdata (
-            VendorID INTEGER, tpep_pickup_datetime TIMESTAMP, tpep_dropoff_datetime TIMESTAMP,
-            passenger_count DOUBLE, trip_distance DOUBLE, PULocationID INTEGER,
-            DOLocationID INTEGER, total_amount DOUBLE
+        CREATE TABLE fait_trajets (
+            id_trajet INTEGER, id_temps_depart BIGINT, id_temps_arrivee BIGINT,
+            id_location_depart INTEGER, id_location_arrivee INTEGER, id_vendeur INTEGER,
+            id_tarif INTEGER, type_paiement INTEGER, store_and_fwd_flag VARCHAR,
+            nb_passagers DOUBLE, distance DOUBLE, duree_minutes DOUBLE,
+            pourboire DOUBLE, peages DOUBLE, montant_total DOUBLE
         )
     """)
     for i in range(5):
         con.execute(
-            "INSERT INTO yellowtripdata VALUES (1, '2026-07-01 10:00:00', '2026-07-01 10:20:00', 1, ?, 1, 2, 20.5)",
-            [float(i)],
+            "INSERT INTO fait_trajets VALUES (?, 202607011000, 202607011000, 1, 2, 1, 1, 1, 'N', 1, ?, 20, 0, 0, 20.5)",
+            [i, float(i)],
         )
     con.close()
 
     with patch("routes.courses.DB_PATH", chemin):
         yield chemin
-
 
 def test_listePaginee(base):
     response = client.get("/courses", params={"limit": 2, "offset": 2})
