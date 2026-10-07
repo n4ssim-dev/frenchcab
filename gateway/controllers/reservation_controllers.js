@@ -9,4 +9,15 @@ function ajouterReservation(req,res){
     });
 }
 
-module.exports = {ajouterReservation};
+
+function listerReservations(req,res){
+    reservationModel.getReservations((err,reservations)=>{
+        if(err){
+            return res.status(500).json({message:"Erreur"});
+        }
+
+        res.status(200).json(reservations);
+    });
+}
+
+module.exports = {ajouterReservation,listerReservations};

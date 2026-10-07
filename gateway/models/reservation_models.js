@@ -20,4 +20,10 @@ function createReservation(reservation,callback){
     ],callback);
 }
 
-module.exports = {createReservation};
+function getReservations(callback){
+    const sql = "SELECT * FROM reservations";
+    db.all(sql,[],callback);
+}
+
+module.exports = {createReservation,getReservations};
+
