@@ -74,7 +74,7 @@ export class ReservationsService {
     return this.http
       .get<ReponseGateway>(`${GATEWAY_URL}/reservations`, {
         params,
-        headers: { 'x-api-password': GATEWAY_PASSWORD },
+        headers: { 'x-api-password': GATEWAY_PASSWORD},
       })
       .pipe(map((r) => r.reponse));
   }
@@ -86,4 +86,6 @@ export class ReservationsService {
   //     })
   //     .pipe(map((r) => r.reponse));
   // }
+
+
 }
