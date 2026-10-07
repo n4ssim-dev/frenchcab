@@ -1,0 +1,6 @@
+.header-container {
+  display: flex;
+  justify-content: space-between; /* Aligne le titre à gauche et le bouton à droite */
+  align-items: center;           /* Centre verticalement le titre et le bouton */
+  margin-bottom: 20px;           /* Espace avec le tableau en dessous */
+}
