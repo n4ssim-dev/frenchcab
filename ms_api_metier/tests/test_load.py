@@ -33,9 +33,9 @@ TRAJETS = COLONNES + """
 # Ligne 4 : zone 999 qui n'existe pas -> doit être retirée
 
 
+
 @pytest.fixture
 def fausse_base(tmp_path, monkeypatch):
-    """Redirige load.py vers des fichiers temporaires."""
     zones = tmp_path / "zones.csv"
     trajets = tmp_path / "trajets.csv"
     zones.write_text(ZONES, encoding="utf-8")
@@ -63,9 +63,8 @@ def compter(conn, table):
     return conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
 
 
-# ---------------------------------------------------------------------------
-# 1. Création des tables
-# ---------------------------------------------------------------------------
+#création des tables
+
 def test_creerBase_creeLes4Tables(fausse_base):
     conn = sqlite3.connect(fausse_base)
     tables = {t[0] for t in conn.execute("SELECT name FROM sqlite_master WHERE type='table'")}
@@ -78,9 +77,8 @@ def test_creerBase_deuxFoisSansErreur(fausse_base, capsys):
     assert "existe déjà" in capsys.readouterr().out
 
 
-# ---------------------------------------------------------------------------
-# 2. Mot de passe
-# ---------------------------------------------------------------------------
+#mot de passe
+
 def test_hacher_neStockePasEnClair():
     h = load.hacher("Alice2026!")
     assert h != "Alice2026!"
@@ -88,9 +86,8 @@ def test_hacher_neStockePasEnClair():
     assert h == load.hacher("Alice2026!")    # même entrée -> même empreinte
 
 
-# ---------------------------------------------------------------------------
-# 3. Import complet
-# ---------------------------------------------------------------------------
+# import complet
+
 def test_nombreDeLignes(base_remplie):
     assert compter(base_remplie, "lieux") == 4
     assert compter(base_remplie, "clients") == len(load.CLIENTS_EXEMPLE)

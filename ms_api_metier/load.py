@@ -24,7 +24,7 @@ def creer_base_si_inexistante():
 
     cursor = conn.cursor()
 
-    #  clients ----------------
+    #  clients
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS clients (
@@ -35,7 +35,7 @@ def creer_base_si_inexistante():
         )
     """)
 
-    #  lieux ----------------
+    #  lieux
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS lieux (
@@ -46,7 +46,7 @@ def creer_base_si_inexistante():
         )
     """)
 
-    #  reservations ----------------
+    #  reservations
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS reservations (
@@ -71,7 +71,7 @@ def creer_base_si_inexistante():
         )
     """)
 
-    #  trajets ----------------
+    #  trajets
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS trajets (
@@ -124,9 +124,9 @@ def creer_base_si_inexistante():
 
 #import
 
-# --- Paramètres --------------------------------------------------------------
-NB_TRAJETS_AVEC_CLIENT = 50_000   # les trajets le quelles on rattache à un client
-GRAINE = 42# même graine = mêmes résultats à chaque lancement
+# --- paramètres --------------------------------------------------------------
+NB_TRAJETS_AVEC_CLIENT = 50_000
+GRAINE = 42
 
 # statut
 # 0 = en attente,
@@ -136,7 +136,7 @@ GRAINE = 42# même graine = mêmes résultats à chaque lancement
 STATUT_TERMINEE = 2
 
 # client
-# Le "poids" = la fréquence d'utilisation : un client de poids 10 fait
+# Le "poids" = la fréquence d'utilisation un client de poids 10 fait
 # environ 10 fois plus de trajets qu'un client de poids 1
 
 CLIENTS_EXEMPLE = [
@@ -173,7 +173,7 @@ def vider_tables(conn):
     print("Tables vidées.")
 
 
-# lieux -------------------
+# lieux
 def importer_lieux(conn):
 
     zones = pd.read_csv(ZONES_CSV, keep_default_na=False)
@@ -192,7 +192,7 @@ def importer_lieux(conn):
     return set(zones["locationID"])
 
 
-# clients -------
+# clients
 def importer_clients(conn):
     lignes = [
         (i, nom, email, hacher(mdp))
@@ -256,7 +256,7 @@ def creer_reservations(conn, df):
     index_choisis = rng.choice(len(df), size=n, replace=False)
     choisis = df.loc[index_choisis]
 
-    #cChoisir un client pour chaque trajet, selon les poids
+    #choisir un client pour chaque trajet, selon les poids
     poids = np.array([c[3] for c in CLIENTS_EXEMPLE], dtype=float)
     uid_clients = rng.choice(np.arange(1, len(CLIENTS_EXEMPLE) + 1), size=n, p=poids / poids.sum())
 
@@ -278,7 +278,7 @@ def creer_reservations(conn, df):
     resa.to_sql("reservations", conn, if_exists="append", index=False, chunksize=10_000)
     print(f"reservations : {len(resa)} lignes")
 
-    # Écrire l'uid_reservation dans les trajets choisis (les autres restent vides)
+    # écrire l'uid_reservation dans les trajets choisis
     df["uid_reservation"] = pd.Series(pd.NA, index=df.index, dtype="Int64")
     df.loc[index_choisis, "uid_reservation"] = resa["uid_reservation"].values
     return df
@@ -296,7 +296,7 @@ COLONNES_TRAJETS = [
 
 
 def importer_trajets(conn, df):
-    # sqlite n'a pas de vrai type date on stocke du texte "AAAA-MM-JJ HH:MM:SS"
+
     for col in ("tpep_pickup_datetime", "tpep_dropoff_datetime"):
         df[col] = df[col].dt.strftime("%Y-%m-%d %H:%M:%S")
 
