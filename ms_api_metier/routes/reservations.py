@@ -16,7 +16,7 @@ ANNULEE = 3
 NOMS_STATUTS = {EN_ATTENTE: "en attente", CONFIRMEE: "confirmée",
                 TERMINEE: "terminée", ANNULEE: "annulée"}
 
-# Changements de statut(tatut actuel -> statuts possibles)
+# changements de statut(tatut actuel -> statuts possibles)
 # "terminée" et "annulée" sont des statuts FINAUX
 TRANSITIONS = {
     EN_ATTENTE: {CONFIRMEE, ANNULEE},
@@ -113,7 +113,7 @@ def detailReservation(uid_reservation: int = Path(gt=0)):
 def changerStatut(changement: ChangementStatut, uid_reservation: int = Path(gt=0)):
     conn = connexion()
     try:
-        resa = lire_reservation(conn, uid_reservation)   # 404 si elle n'existe pas
+        resa = lire_reservation(conn, uid_reservation)
         actuel, nouveau = resa["statut_resa"], changement.statut
 
         if nouveau not in TRANSITIONS[actuel]:
