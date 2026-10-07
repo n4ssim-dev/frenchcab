@@ -209,3 +209,4 @@ py load.py
 
 ## Problèmes identifiés
 
+- écrire le fichier du modèle entraîné dans /app/data (volume du conteneur)
