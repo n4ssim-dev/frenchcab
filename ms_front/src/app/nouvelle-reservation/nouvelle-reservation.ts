@@ -57,7 +57,8 @@ export class NouvelleReservation {
         },
       });
   }
-  reserver() {
+  /*
+ reserver() {
     const depart = this.depart();
     const arrivee = this.arrivee();
     const distance = this.distance();
@@ -92,7 +93,7 @@ export class NouvelleReservation {
           this.chargement.set(false);
         },
       });
-  }
+  }*/
 }
 
 
