@@ -34,8 +34,18 @@ function predireDuree(corps) {
   });
 }
 
+function reservation(reserv) {
+  return requeter("/reservations", {}, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(reserv),
+  });
+}
+
+
 module.exports = {
   getCourses,
   getCourse,
-  predireDuree
+  predireDuree,
+  reservation
 };

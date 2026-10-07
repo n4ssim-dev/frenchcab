@@ -65,7 +65,7 @@ def lire_reservation(conn, uid):
 
 
 #routes
-@router.post("", status_code=201) 
+@router.post("", status_code=201)
 def ajouterReservation(resa: NouvelleReservation):
     depart = datetime.combine(resa.resa_date, resa.resa_heure)
     if depart < datetime.now():

@@ -6,4 +6,8 @@ router.get("/courses", metierController.getCourses);
 router.get("/courses/:id", metierController.getCourse);
 router.post("/predictions/duree", metierController.predireDuree);
 
+router.post("/reservation", metierController.reservation); 
+
+
+
 module.exports = router;

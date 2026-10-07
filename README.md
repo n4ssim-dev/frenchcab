@@ -207,5 +207,10 @@ Depuis le repertoire ms_api_metier lancer pour creer la Base de données : \ms_a
 py load.py 
 ```
 
+## Déploiement sur la VM
+
+-   Connecter sur la VM
+-   dans le repertoire frenchcab/api_data lancer le script d'initialisation des bases de données
+
 
 

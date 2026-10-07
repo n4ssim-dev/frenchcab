@@ -20,7 +20,10 @@
     Distance (miles)
     <input type="number" name="distance" min="0.1" step="0.1" [(ngModel)]="distance" />
   </label>
-
+   <label>
+    Client
+    <input type="number" name="client" min="1" step="15" [(ngModel)]="client" />
+  </label>
   <button type="submit" [disabled]="chargement()"> Estimation la durée de la course </button>
 </form>
 
@@ -34,5 +37,9 @@
 
 @if (resultat() !== null) {
   <p class="resultat"> Durée estimée : <strong>{{ resultat() }} min</strong></p>
-   <button type="submit" [disabled]="chargement()"> Réserver cette course</button>
+   <button [disabled]="chargement()" (click)="reserver()"> Réserver cette course</button>
+}
+
+@if (message !== "") {
+    <p class="message-success">  <strong>{{ message}} </strong></p>
 }

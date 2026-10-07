@@ -34,16 +34,29 @@ interface ReponseGateway {
   reponse: PageReservations;
 }
 
-// export interface DemandePrediction {
-//   pickup: string;
-//   id_location_depart: number;
-//   id_location_arrivee: number;
-//   distance: number;
-// }
+export interface DemandeReservation {
 
-// export interface ResultatPrediction {
-//   duree_predite_min: number;
-// }
+    pickup: string;  
+    uid_client:number;
+    resa_PU_locationID:number;
+    resa_DO_locationID: number;
+    resa_date: string;
+    resa_heure:string;
+    estimation_duree_course:number;
+}
+
+export interface ResultatReservation {
+   uid_reservation : number ;
+    resa_PU_locationID: number;
+    resa_DO_locationID: number;
+    resa_date: string;
+    resa_heure: string;
+    estimation_duree_course: number;
+    date_heure_reservation : string;
+    statut_resa: number;
+    uid_client: number;
+    statut_nom : string;
+}
 
 
 export interface Reservation { 
@@ -55,7 +68,7 @@ export interface Reservation {
   estimation_duree_course: string | null;
   date_heure_reservation: string | null;
   statut_resa: string | null;
-  uid_client: string | null;
+  uid_client: number| null;
  
 }
 
@@ -79,13 +92,12 @@ export class ReservationsService {
       .pipe(map((r) => r.reponse));
   }
 
-  // predireDuree(demande: DemandePrediction): Observable<ResultatPrediction> {
-  //   return this.http
-  //     .post<{ reponse: ResultatPrediction }>(`${GATEWAY_URL}/predictions/duree`, demande, {
-  //       headers: { 'x-api-password': GATEWAY_PASSWORD },
-  //     })
-  //     .pipe(map((r) => r.reponse));
-  // }
-
+  reserver(demande: DemandeReservation): Observable<ResultatReservation> {
+    return this.http
+      .post<{ reponse: ResultatReservation }>(`${GATEWAY_URL}/reservation`, demande, {
+        headers: { 'x-api-password': GATEWAY_PASSWORD },
+      })
+      .pipe(map((r) => r.reponse));
+  }
 
 }
