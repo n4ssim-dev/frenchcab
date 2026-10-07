@@ -207,5 +207,5 @@ Depuis le repertoire ms_api_metier lancer pour creer la Base de données : \ms_a
 py load.py 
 ```
 
-
+## Problèmes identifiés
 

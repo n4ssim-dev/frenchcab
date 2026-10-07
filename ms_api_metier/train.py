@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 DB_PATH = "data/yellow_taxi.db"
-MODEL_PATH = "models/model_duree.joblib"
+MODEL_PATH = "data/models/model_duree.joblib"
 
 con = duckdb.connect(str(DB_PATH), read_only=True)
 df = con.execute("""
