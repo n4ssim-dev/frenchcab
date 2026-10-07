@@ -1,4 +1,4 @@
-const reservationModel = require("../models/reservation_model.js");
+const reservationModel = require("../models/reservation_models.js");
 
 function ajouterReservation(req,res){
     const reservation = req.body;
