@@ -57,7 +57,7 @@ export class NouvelleReservation {
         },
       });
   }
-  /*
+  
  reserver() {
     const depart = this.depart();
     const arrivee = this.arrivee();
@@ -82,7 +82,7 @@ export class NouvelleReservation {
       })
       .subscribe({
         next: (r) => {
-         // this.resultat.set(r.duree_predite_min);
+         this.resultat.set(r.duree_predite_min);
           this.chargement.set(false);
         },
         error: (e) => {
@@ -93,7 +93,7 @@ export class NouvelleReservation {
           this.chargement.set(false);
         },
       });
-  }*/
+  }
 }
 
 
