@@ -3,12 +3,12 @@ import { Component, computed, effect, inject, input, linkedSignal, signal } from
 import { Course, CoursesService } from '../courses.service';
 
 @Component({
-  selector: 'app-courses-table',
+  selector: 'app-reservations-table',
   imports: [DatePipe, DecimalPipe],
-  templateUrl: './courses-table.html',
-  styleUrl: './courses-table.scss',
+  templateUrl: './reservations-table.html',
+  styleUrl: './reservations-table.scss',
 })
-export class CoursesTable {
+export class ReservationsTable {
   private service = inject(CoursesService);
 
   /** Date AAAA-MM-JJ : si elle est absente, on affiche toutes les courses. */
@@ -60,3 +60,4 @@ export class CoursesTable {
     this.page.update((p) => Math.min(this.nbPages() - 1, p + 1));
   }
 }
+

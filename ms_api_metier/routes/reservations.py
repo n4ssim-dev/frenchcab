@@ -85,7 +85,6 @@ def lire_reservation(conn, uid):
     return en_dict(ligne)
 
 
-# routes
 @router.post("", status_code=201)
 def ajouterReservation(resa: NouvelleReservation):
     # On enlève le fuseau horaire ("14:30:00Z" -> 14:30:00), sinon erreur 500

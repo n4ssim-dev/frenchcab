@@ -7,4 +7,4 @@ import { CoursesTable } from '../courses-table/courses-table';
   templateUrl: './liste-courses.html',
   styleUrl: './liste-courses.scss',
 })
-export class ListeCourses {}
+export class ListeCourses {} 

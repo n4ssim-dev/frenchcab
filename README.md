@@ -198,3 +198,14 @@ Une vérification des images docker a été programmée à 11h et à 15h. A ces 
 
     echo "=== Déploiement terminé ==="
 ```
+
+## Base Transactionnelle 
+
+Depuis le repertoire ms_api_metier lancer pour creer la Base de données : \ms_api_metier\data\frenchcab.db
+
+```
+py load.py 
+```
+
+
+
