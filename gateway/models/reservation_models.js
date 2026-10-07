@@ -1,4 +1,4 @@
-const db = require("../database/db");
+const db = require("../data/connexion");
 
 function createReservation(reservation,callback){
     const sql = `INSERT INTO reservations
