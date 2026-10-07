@@ -8,8 +8,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-DB_PATH = "ms_api_metier/data/yellow_taxi.db"
-MODEL_PATH = "ms_api_metier/models/model_duree.joblib"
+DB_PATH = "data/yellow_taxi.db"
+MODEL_PATH = "models/model_duree.joblib"
 
 con = duckdb.connect(str(DB_PATH), read_only=True)
 df = con.execute("""
@@ -39,7 +39,7 @@ print(f"Nombre de lignes : {len(df)}")
 
 print("\n1 : Matrice corrélation")
 print("-" * 40)
-dossier_sortie = f"ms_api_metier/Matrices corrélation/"
+dossier_sortie = "data/Matrices_correlation/"
 os.makedirs(dossier_sortie, exist_ok=True)
 corr = df.corr(numeric_only=True)
 

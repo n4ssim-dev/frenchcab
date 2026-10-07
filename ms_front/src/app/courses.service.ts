@@ -7,7 +7,7 @@ import { environment } from '../environments/environment';
 const GATEWAY_URL = environment.gatewayUrl;
 const GATEWAY_PASSWORD = '5';
 
-export interface Course {
+export interface Course { 
   id: number;
   vendor_id: number;
   depart: string;
@@ -51,6 +51,7 @@ export class CoursesService {
 
   getCourses(limit: number, offset: number, date: string | null): Observable<PageCourses> {
     let params = new HttpParams().set('limit', limit).set('offset', offset);
+
     if (date) {
       params = params.set('date', date); // format AAAA-MM-JJ
     }
