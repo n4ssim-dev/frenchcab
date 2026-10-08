@@ -42,10 +42,18 @@ function reservation(reserv) {
   });
 }
 
+function listeReservations() {
+  return requeter("/reservations", {}, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+   
+  });
+}
 
 module.exports = {
   getCourses,
   getCourse,
   predireDuree,
-  reservation
+  reservation,
+  listeReservations
 };

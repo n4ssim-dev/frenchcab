@@ -25,7 +25,7 @@ export interface PageReservations {
   total: number;
   limit: number;
   offset: number;
-  courses: Reservation[];
+  reservations: Reservation[];
 }
 
 interface ReponseGateway {
@@ -36,42 +36,56 @@ interface ReponseGateway {
 
 export interface DemandeReservation {
 
-    pickup: string;  
-    uid_client:number;
-    resa_PU_locationID:number;
-    resa_DO_locationID: number;
-    resa_date: string;
-    resa_heure:string;
-    estimation_duree_course:number;
+  pickup: string;
+  uid_client: number;
+  resa_PU_locationID: number;
+  resa_DO_locationID: number;
+  resa_date: string;
+  resa_heure: string;
+  estimation_duree_course: number;
 }
 
 export interface ResultatReservation {
-   uid_reservation : number ;
-    resa_PU_locationID: number;
-    resa_DO_locationID: number;
-    resa_date: string;
-    resa_heure: string;
-    estimation_duree_course: number;
-    date_heure_reservation : string;
-    statut_resa: number;
-    uid_client: number;
-    statut_nom : string;
-}
-
-
-export interface Reservation { 
   uid_reservation: number;
-  resa_PU_locationID: string;
-  resa_DO_locationID: string;
+  resa_PU_locationID: number;
+  resa_DO_locationID: number;
   resa_date: string;
   resa_heure: string;
-  estimation_duree_course: string | null;
-  date_heure_reservation: string | null;
-  statut_resa: string | null;
-  uid_client: number| null;
- 
+  estimation_duree_course: number;
+  date_heure_reservation: string;
+  statut_resa: number;
+  uid_client: number;
+  statut_nom: string;
 }
 
+
+export interface Reservation {
+  uid_reservation: number;
+
+  resa_PU_locationID: number;
+  resa_DO_locationID: number;
+
+  resa_date: string;
+  resa_heure: string;
+
+  estimation_duree_course: number | null;
+  date_heure_reservation: string | null;
+
+  statut_resa: number | null;
+  uid_client: number | null;
+
+  PU_locationID: number;
+  zone_depart: string;
+
+  DO_locationID: number;
+  zone_arrivee: string;
+
+  client_nom: string;
+  client_email: string;
+
+  // Statut
+  statut_nom: string;
+}
 
 
 @Injectable({ providedIn: 'root' })
@@ -87,7 +101,7 @@ export class ReservationsService {
     return this.http
       .get<ReponseGateway>(`${GATEWAY_URL}/reservations`, {
         params,
-        headers: { 'x-api-password': GATEWAY_PASSWORD},
+        headers: { 'x-api-password': GATEWAY_PASSWORD },
       })
       .pipe(map((r) => r.reponse));
   }

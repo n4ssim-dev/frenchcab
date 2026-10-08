@@ -7,6 +7,7 @@ router.get("/courses/:id", metierController.getCourse);
 router.post("/predictions/duree", metierController.predireDuree);
 
 router.post("/reservation", metierController.reservation); 
+router.get("/reservations", metierController.listeReservations); 
 
 
 

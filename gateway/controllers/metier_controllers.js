@@ -68,9 +68,24 @@ async function reservation(req, res) {
   }
 }
 
+async function listeReservations(req, res) {
+  try {
+    const reponse = await metier_models.listeReservations();
+
+    res.status(200).json({
+      success: true,
+      message: "La demande a été envoyée à l'API métier",
+      reponse: reponse.data,
+    });
+  } catch (error) {
+    repondreErreur(res, error);
+  }
+}
+
 module.exports = {
   getCourses,
   getCourse,
   predireDuree,
-  reservation
+  reservation,
+  listeReservations
 };
