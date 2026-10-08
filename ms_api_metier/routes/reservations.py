@@ -85,6 +85,7 @@ def lire_reservation(conn, uid):
     return en_dict(ligne)
 
 
+#routes
 @router.post("", status_code=201)
 def ajouterReservation(resa: NouvelleReservation):
     # On enlève le fuseau horaire ("14:30:00Z" -> 14:30:00), sinon erreur 500
@@ -142,11 +143,45 @@ def listerReservations(
 
     conn = connexion()
     try:
-        total = conn.execute(f"SELECT COUNT(*) FROM reservations{where}", params).fetchone()[0]
+        #total = conn.execute(f"SELECT COUNT(*) FROM reservations{where}", params).fetchone()[0]
+        total = conn.execute(f"""SELECT COUNT(*) FROM reservations r {where}""",params).fetchone()[0]
+        # lignes = conn.execute(
+        #     f"SELECT * FROM reservations{where} ORDER BY uid_reservation DESC LIMIT ? OFFSET ?",
+        #     params + [limit, offset],
+        # ).fetchall()
+        
         lignes = conn.execute(
-            f"SELECT * FROM reservations{where} ORDER BY uid_reservation DESC LIMIT ? OFFSET ?",
-            params + [limit, offset],
-        ).fetchall()
+    f"""
+    SELECT
+        r.*,
+        pu.locationID AS PU_locationID,
+        pu.zone AS zone_depart,
+
+        do.locationID AS DO_locationID,
+        do.zone AS zone_arrivee,
+
+        c.uid_client,
+        c.nom AS client_nom,
+        c.email AS client_email
+
+    FROM reservations r
+
+    LEFT JOIN lieux pu
+        ON pu.locationID = r.resa_PU_locationID
+
+    LEFT JOIN lieux do
+        ON do.locationID = r.resa_DO_locationID
+
+    LEFT JOIN clients c
+        ON c.uid_client = r.uid_client
+
+    {where}
+    ORDER BY r.uid_reservation DESC
+    LIMIT ? OFFSET ?
+    """,
+    params + [limit, offset],
+).fetchall()
+        
     finally:
         conn.close()
 
