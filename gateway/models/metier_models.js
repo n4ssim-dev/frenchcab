@@ -18,8 +18,8 @@ async function requeter(chemin, params = {}, options = {}) {
   return { data };
 }
 
-function getCourses({ limit, offset,date } = {}) {
-  return requeter("/courses", { limit, offset,date });
+function getCourses({ limit, offset, date } = {}) {
+  return requeter("/courses", { limit, offset, date });
 }
 
 function getCourse(id) {
@@ -46,14 +46,26 @@ function listeReservations() {
   return requeter("/reservations", {}, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
-   
+
   });
 }
+
+function updateReservation(uid_reservation,statut) {
+  return requeter(`/reservations/${uid_reservation}/statut`, {}, 
+      {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(statut),
+  });
+}
+
+//http://127.0.0.1:8000/reservations/50031/statut
 
 module.exports = {
   getCourses,
   getCourse,
   predireDuree,
   reservation,
-  listeReservations
+  listeReservations,
+  updateReservation
 };

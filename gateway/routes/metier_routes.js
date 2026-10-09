@@ -9,6 +9,9 @@ router.post("/predictions/duree", metierController.predireDuree);
 router.post("/reservation", metierController.reservation); 
 router.get("/reservations", metierController.listeReservations); 
 
+router.patch("/reservations", metierController.updateReservation); 
+
+
 
 
 module.exports = router;

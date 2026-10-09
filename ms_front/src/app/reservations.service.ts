@@ -7,19 +7,7 @@ import { environment } from '../environments/environment';
 const GATEWAY_URL = environment.gatewayUrl;
 const GATEWAY_PASSWORD = '5';
 
-// export interface Course { 
-//   id: number;
-//   vendor_id: number;
-//   depart: string;
-//   arrivee: string;
-//   passagers: number;
-//   distance: number;
-//   zone_depart: string | null;
-//   quartier_depart: string | null;
-//   zone_arrivee: string | null;
-//   quartier_arrivee: string | null;
-//   montant: number;
-// }
+
 
 export interface PageReservations {
   total: number;

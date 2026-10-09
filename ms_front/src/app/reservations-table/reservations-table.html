@@ -16,31 +16,37 @@
       <table>
         <thead>
           <tr>
-            <th>uid reservation</th>
+          
             <th>Date</th>
             <th>Heure</th>
             <th>Statut</th>
             <th>Zone de départ</th>
             <th>Zone d'arrivée</th>
-            <!-- <th>duree estimation course</th> -->
             <th>Nom Client</th>
             <th>Email Client</th>
+            <th> Actions</th>
           </tr>
         </thead>
         <tbody>
           @for (c of reservations(); track c.uid_reservation) {
             <tr>
-              <td>{{ c.uid_reservation}}</td>
+              <!-- <td>{{ c.uid_reservation}}</td> -->
               <td>{{ c.resa_date | date: 'dd/MM/yy HH:mm' }}</td>
               <td>{{ c.resa_heure }} </td>
               <td>{{ c.statut_nom  }} </td>
               <td>{{ c.zone_depart }}</td>
               <td>{{ c.zone_arrivee  }}</td>
-              <!-- <td class="num">{{ c.estimation_duree_course }} </td> -->
               <td class="num">{{ c.client_nom  }}</td>
               <td class="num">{{ c.client_email }} </td>
-              
-              
+    <td class="num">
+      <button
+        type="button"
+        class="btn-annuler"
+        [disabled]="c.statut_nom === 'Annulée'"
+        (click)="annulerReservation(c.uid_reservation)">
+        {{ c.statut_nom === 'Annulée' ? 'Annulée' : 'Annuler' }}
+      </button>
+    </td>
             </tr>
           }
         </tbody>

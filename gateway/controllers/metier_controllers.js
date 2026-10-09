@@ -82,10 +82,27 @@ async function listeReservations(req, res) {
   }
 }
 
+
+
+async function updateReservation(req, res) {
+  try {
+    const reponse = await metier_models.updateReservation(req.params.uid_reservation,req.body.statut); 
+
+    res.status(200).json({
+      success: true,
+      message: "La demande a été envoyée à l'API métier",
+      reponse: reponse.data,
+    });
+  } catch (error) {
+    repondreErreur(res, error);
+  }
+}
+
 module.exports = {
   getCourses,
   getCourse,
   predireDuree,
   reservation,
-  listeReservations
+  listeReservations,
+  updateReservation
 };
