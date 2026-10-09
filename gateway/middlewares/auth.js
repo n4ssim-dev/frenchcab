@@ -1,7 +1,7 @@
+require('dotenv').config();
 const crypto = require("crypto");
-
 const PASSWORD = process.env.GATEWAY_PASSWORD;
-
+console.log(PASSWORD);
 if (!PASSWORD) {
   throw new Error("GATEWAY_PASSWORD manquant dans le .env");
 }

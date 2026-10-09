@@ -1,0 +1,58 @@
+@if (erreur()) {
+  <p class="erreur">{{ erreur() }}</p>
+} @else {
+  <p class="resume">
+    {{ total() | number }} Réservation(s)
+    @if (date()) {
+      le {{ date() | date: 'dd/MM/yy' }}
+    }
+    @if (chargement()) {
+      <span class="chargement"> — chargement… </span>
+    }
+  </p>
+
+  @if (reservations().length > 0) {  
+    <div class="conteneur">
+      <table>
+        <thead>
+          <tr>
+            <th>uid reservation</th>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Statut</th>
+            <th>Zone de départ</th>
+            <th>Zone d'arrivée</th>
+            <!-- <th>duree estimation course</th> -->
+            <th>Nom Client</th>
+            <th>Email Client</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of reservations(); track c.uid_reservation) {
+            <tr>
+              <td>{{ c.uid_reservation}}</td>
+              <td>{{ c.resa_date | date: 'dd/MM/yy HH:mm' }}</td>
+              <td>{{ c.resa_heure }} </td>
+              <td>{{ c.statut_nom  }} </td>
+              <td>{{ c.zone_depart }}</td>
+              <td>{{ c.zone_arrivee  }}</td>
+              <!-- <td class="num">{{ c.estimation_duree_course }} </td> -->
+              <td class="num">{{ c.client_nom  }}</td>
+              <td class="num">{{ c.client_email }} </td>
+              
+              
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button (click)="precedent()" [disabled]="page() === 0 || chargement()">← Précédent</button>
+      <span>Page {{ page() + 1 | number }} / {{ nbPages() | number }}</span>
+      <button (click)="suivant()" [disabled]="page() >= nbPages() - 1 || chargement()">Suivant →</button>
+    </div>
+  } @else if (!chargement()) {
+    <p>Aucune Réservation trouvée.</p>
+  }
+}

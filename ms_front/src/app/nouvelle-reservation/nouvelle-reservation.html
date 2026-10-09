@@ -1,0 +1,45 @@
+<h1>Nouvelle réservation de Taxi </h1>
+
+<form (ngSubmit)="predire()">
+  <label>
+    Départ (date et heure)
+    <input type="datetime-local" name="pickup" [(ngModel)]="pickup" />
+  </label>
+
+  <label>
+    Zone de départ (id)
+    <input type="number" name="depart" min="1" [(ngModel)]="depart" />
+  </label>
+
+  <label>
+    Zone d'arrivée (id)
+    <input type="number" name="arrivee" min="1" [(ngModel)]="arrivee" />
+  </label>
+
+  <label>
+    Distance (miles)
+    <input type="number" name="distance" min="0.1" step="0.1" [(ngModel)]="distance" />
+  </label>
+   <label>
+    Client
+    <input type="number" name="client" min="1" step="1" [(ngModel)]="client" />
+  </label>
+  <button type="submit" [disabled]="chargement()"> Estimation la durée de la course </button>
+</form>
+
+@if (chargement()) {
+  <p>Estimation de la durée de la course en cours…</p>
+}
+
+@if (erreur()) {
+  <p class="erreur">{{ erreur() }}</p>
+}
+
+@if (resultat() !== null) {
+  <p class="resultat"> Durée estimée : <strong>{{ resultat() }} min</strong></p>
+   <button [disabled]="chargement()" (click)="reserver()"> Réserver cette course</button>
+}
+
+@if (message !== "") {
+    <p class="message-success">  <strong>{{ message}} </strong></p>
+}

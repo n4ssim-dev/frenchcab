@@ -54,8 +54,38 @@ async function predireDuree(req, res) {
   }
 }
 
+async function reservation(req, res) {
+  try {
+    const reponse = await metier_models.reservation(req.body);
+
+    res.status(200).json({
+      success: true,
+      message: "La demande a été envoyée à l'API métier",
+      reponse: reponse.data,
+    });
+  } catch (error) {
+    repondreErreur(res, error);
+  }
+}
+
+async function listeReservations(req, res) {
+  try {
+    const reponse = await metier_models.listeReservations();
+
+    res.status(200).json({
+      success: true,
+      message: "La demande a été envoyée à l'API métier",
+      reponse: reponse.data,
+    });
+  } catch (error) {
+    repondreErreur(res, error);
+  }
+}
+
 module.exports = {
   getCourses,
   getCourse,
-  predireDuree
+  predireDuree,
+  reservation,
+  listeReservations
 };

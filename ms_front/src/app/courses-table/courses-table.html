@@ -7,11 +7,11 @@
       le {{ date() | date: 'dd/MM/yy' }}
     }
     @if (chargement()) {
-      <span class="chargement">— chargement…</span>
+      <span class="chargement">— chargement… </span>
     }
   </p>
 
-  @if (courses().length > 0) {
+  @if (courses().length > 0) {  
     <div class="conteneur">
       <table>
         <thead>

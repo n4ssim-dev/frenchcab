@@ -1,15 +1,15 @@
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
-import { Course, CoursesService } from '../courses.service';
+import { Reservation, ReservationsService } from '../reservations.service';
 
 @Component({
-  selector: 'app-courses-table',
+  selector: 'app-reservations-table',
   imports: [DatePipe, DecimalPipe],
-  templateUrl: './courses-table.html',
-  styleUrl: './courses-table.scss',
+  templateUrl: './reservations-table.html',
+  styleUrl: './reservations-table.scss',
 })
-export class CoursesTable {
-  private service = inject(CoursesService);
+export class ReservationsTable {
+  private service = inject(ReservationsService);
 
   /** Date AAAA-MM-JJ : si elle est absente, on affiche toutes les courses. */
   date = input<string | null>(null);
@@ -21,7 +21,7 @@ export class CoursesTable {
     return 0;
   });
 
-  courses = signal<Course[]>([]);
+  reservations = signal<Reservation[]>([]);
   total = signal(0);
   chargement = signal(false);
   erreur = signal<string | null>(null);
@@ -34,14 +34,14 @@ export class CoursesTable {
       this.chargement.set(true);
       this.erreur.set(null);
 
-      const abonnement = this.service.getCourses(this.limit, page * this.limit, date).subscribe({
+      const abonnement = this.service.getReservations(this.limit, page * this.limit, date).subscribe({
         next: (reponse) => {
-          this.courses.set(reponse.courses);
+          this.reservations.set(reponse.reservations);
           this.total.set(reponse.total);
           this.chargement.set(false);
         },
         error: (err) => {
-          this.courses.set([]);
+          this.reservations.set([]);
           this.total.set(0);
           this.erreur.set(err?.error?.message ?? 'Impossible de contacter le gateway.');
           this.chargement.set(false);
@@ -60,3 +60,4 @@ export class CoursesTable {
     this.page.update((p) => Math.min(this.nbPages() - 1, p + 1));
   }
 }
+
