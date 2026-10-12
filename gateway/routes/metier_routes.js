@@ -9,9 +9,7 @@ router.post("/predictions/duree", metierController.predireDuree);
 router.post("/reservation", metierController.reservation); 
 router.get("/reservations", metierController.listeReservations); 
 
-router.patch("/reservations", metierController.updateReservation); 
-
-
+router.patch("/reservations/:uid_reservation/statut",metierController.updateReservation);
 
 
 module.exports = router;

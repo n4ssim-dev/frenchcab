@@ -102,4 +102,16 @@ export class ReservationsService {
       .pipe(map((r) => r.reponse));
   }
 
+
+
+  updateReservation(uid_reservation: number,statut: string): Observable<any> {
+    return this.http.patch(
+      `${GATEWAY_URL}/reservations/${uid_reservation}/statut`,
+      { statut: statut }, 
+      {
+        headers: { 'x-api-password': GATEWAY_PASSWORD },
+      }
+    );
+  }
 }
+

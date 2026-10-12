@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ReservationsTable {
   private service = inject(ReservationsService);
-   private http = inject(HttpClient);
+   //private http = inject(HttpClient);
 
   /** Date AAAA-MM-JJ : si elle est absente, on affiche toutes les reservations. */
   date = input<string | null>(null);
@@ -63,27 +63,33 @@ export class ReservationsTable {
     this.page.update((p) => Math.min(this.nbPages() - 1, p + 1));
   }
 
- annulerReservation(uidReservation: number): void {
+changerStatut(uid_reservation: number, statut: string): void {
   const confirmation = confirm(
-    'Voulez-vous vraiment annuler cette réservation ?'
+    `Voulez-vous  annuler la réservation ${uid_reservation} ?`
   );
 
   if (!confirmation) {
     return;
+    window.location.reload();
+
   }
 
-  this.http
-    .delete(`http://localhost:8000/reservations/${uidReservation}`)
+  this.service
+    .updateReservation(uid_reservation, statut)
     .subscribe({
-      next: () => {
-        // Recharge la liste après l'annulation
-        //this.chargerReservations();
+      next: (reponse) => {
+        console.log('réservation annulé avec succès', reponse);
+        alert('Le statut de la réservation a été modifié avec succès.');
+        window.location.reload();
       },
-      error: (err) => {
-        console.error("Erreur lors de l'annulation :", err);
-        alert("Impossible d'annuler cette réservation.");
+      error: (erreur) => {
+        console.error('Erreur lors de la modification', erreur);
+        alert('Une erreur est survenue lors de la modification du statut.');
       }
     });
 }
-    }
+
+
+
+  }
 

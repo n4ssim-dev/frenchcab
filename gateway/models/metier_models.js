@@ -50,16 +50,23 @@ function listeReservations() {
   });
 }
 
-function updateReservation(uid_reservation,statut) {
-  return requeter(`/reservations/${uid_reservation}/statut`, {}, 
-      {
+
+function updateReservation(uid_reservation, statut) {
+  return requeter(
+    `/reservations/${uid_reservation}/statut`,
+    {},
+    {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(statut),
-  });
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ statut: String(statut) })
+    }
+  );
 }
 
-//http://127.0.0.1:8000/reservations/50031/statut
+
+
 
 module.exports = {
   getCourses,

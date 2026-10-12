@@ -42,9 +42,9 @@
       <button
         type="button"
         class="btn-annuler"
-        [disabled]="c.statut_nom === 'Annulée'"
-        (click)="annulerReservation(c.uid_reservation)">
-        {{ c.statut_nom === 'Annulée' ? 'Annulée' : 'Annuler' }}
+        [disabled]="c.statut_resa !== 0"
+        (click)="changerStatut(c.uid_reservation,'1')">
+        Annuler
       </button>
     </td>
             </tr>
