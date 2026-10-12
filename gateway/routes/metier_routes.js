@@ -6,4 +6,10 @@ router.get("/courses", metierController.getCourses);
 router.get("/courses/:id", metierController.getCourse);
 router.post("/predictions/duree", metierController.predireDuree);
 
+router.post("/reservation", metierController.reservation); 
+router.get("/reservations", metierController.listeReservations); 
+
+router.patch("/reservations/:uid_reservation/statut",metierController.updateReservation);
+
+
 module.exports = router;

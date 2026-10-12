@@ -54,8 +54,59 @@ async function predireDuree(req, res) {
   }
 }
 
+async function reservation(req, res) {
+  try {
+    const reponse = await metier_models.reservation(req.body);
+
+    res.status(200).json({
+      success: true,
+      message: "La demande a été envoyée à l'API métier",
+      reponse: reponse.data,
+    });
+  } catch (error) {
+    repondreErreur(res, error);
+  }
+}
+
+async function listeReservations(req, res) {
+  try {
+    const reponse = await metier_models.listeReservations();
+
+    res.status(200).json({
+      success: true,
+      message: "La demande a été envoyée à l'API métier",
+      reponse: reponse.data,
+    });
+  } catch (error) {
+    repondreErreur(res, error);
+  }
+}
+
+async function updateReservation(req, res) {
+  try {
+    const { uid_reservation } = req.params;
+    const { statut } = req.body;
+
+    const reponse = await metier_models.updateReservation(
+      uid_reservation,
+      statut
+    );
+    res.status(200).json({
+      success: true,
+      message: "Le statut de la réservation a été modifié avec succès",
+      reponse: reponse.data
+    });
+  } catch (error) {
+    repondreErreur(res, error);
+  }
+}
+
+
 module.exports = {
   getCourses,
   getCourse,
-  predireDuree
+  predireDuree,
+  reservation,
+  listeReservations,
+  updateReservation
 };
