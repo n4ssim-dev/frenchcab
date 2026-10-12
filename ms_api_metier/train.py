@@ -1,3 +1,4 @@
+from pathlib import Path
 import duckdb
 import joblib
 import os
@@ -8,8 +9,16 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-DB_PATH = "data/yellow_taxi.db"
-MODEL_PATH = "data/models/model_duree.joblib"
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
+MODELS_DIR = DATA_DIR / "models"
+
+DB_PATH = DATA_DIR / "yellow_taxi.db"
+MODEL_PATH = MODELS_DIR / "model_duree.joblib"
+MATRICES_DIR = DATA_DIR / "Matrices_correlation"
+MATRICES_DIR.mkdir(parents=True, exist_ok=True)
+
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
 con = duckdb.connect(str(DB_PATH), read_only=True)
 df = con.execute("""
@@ -39,8 +48,6 @@ print(f"Nombre de lignes : {len(df)}")
 
 print("\n1 : Matrice corrélation")
 print("-" * 40)
-dossier_sortie = "data/Matrices_correlation/"
-os.makedirs(dossier_sortie, exist_ok=True)
 corr = df.corr(numeric_only=True)
 
 print(corr)
@@ -67,7 +74,7 @@ for i in range(len(corr.columns)):
 plt.title("Matrice de corrélation Durée trajet")
 
 plt.tight_layout()
-plt.savefig(os.path.join(dossier_sortie, "Matrice_corrélation_duree_trajet.png"), dpi=120)
+plt.savefig(os.path.join(MATRICES_DIR, "Matrice_corrélation_duree_trajet.png"), dpi=120)
 plt.show()
 plt.close()
 
