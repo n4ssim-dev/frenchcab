@@ -1,17 +1,20 @@
-import pandas as pd
 from pathlib import Path
+
 import duckdb
+import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
+RAW_DIR = DATA_DIR / "raw"
+REJETS_DIR = DATA_DIR / "lignes_rejetees"
 
-CSV_PATH = "data/raw/yellow_tripdata_2026-07.csv"
-OUTPUT_PATH = "data/yellow_tripdata_2026-07_propre.csv"
-dossier_sortie = Path("data/lignes_rejetees")
-dossier_sortie.mkdir(parents=True, exist_ok=True)
-REJETS_PATH = "yellow_taxi_lignes_rejetees.csv"
+CSV_PATH = RAW_DIR / "yellow_tripdata_2026-07.csv"
+ZONES_CSV = RAW_DIR / "taxi_zone_lookup.csv"
+OUTPUT_PATH = DATA_DIR / "yellow_tripdata_2026-07_propre.csv"
+REJETS_PATH = REJETS_DIR / "yellow_taxi_lignes_rejetees.csv"
 SQL_DB = DATA_DIR / "yellow_taxi.db"
-ZONES_CSV = DATA_DIR / "raw" / "taxi_zone_lookup.csv"
+
+REJETS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def lire_csv():
@@ -139,7 +142,7 @@ def nettoyage_csv(df):
     
 
     df_rejets_total = pd.concat([df_rejets_doublons, df_rejets_date_passe, df_rejets_date_passe2, df_rejets_distance, df_rejets_paiement, df_rejets_duree, df_rejets_date_manquante, df_rejets_date_manquante2, df_rejets_date_futur,df_rejets_date_futur2], ignore_index=True)
-    df_rejets_total.to_csv(dossier_sortie / REJETS_PATH, index=False)
+    df_rejets_total.to_csv(REJETS_DIR / REJETS_PATH, index=False)
 
     
     valeurs_manquantes = df.isnull().sum().sum()

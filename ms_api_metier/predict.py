@@ -5,8 +5,10 @@ import numpy as np
 import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parent
-MODEL_PATH =  "data/models/model_duree.joblib"
-DB_PATH = BASE_DIR / "data" / "yellow_taxi.db"
+DATA_DIR = BASE_DIR / "data"
+
+MODEL_PATH = DATA_DIR / "models" / "model_duree.joblib"
+DB_PATH = DATA_DIR / "yellow_taxi.db"
 
 # ---------------------------------------------------------
 # Chargement unique : modèle + petites tables de référence

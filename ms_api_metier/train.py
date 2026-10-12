@@ -1,3 +1,4 @@
+from pathlib import Path
 import duckdb
 import joblib
 import os
@@ -8,10 +9,17 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-DB_PATH = "data/yellow_taxi.db"
-MODEL_PATH = "data/models/model_duree.joblib"
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
+MODELS_DIR = DATA_DIR / "models"
+
+DB_PATH = DATA_DIR / "yellow_taxi.db"
+MODEL_PATH = MODELS_DIR / "model_duree.joblib"
+
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
 con = duckdb.connect(str(DB_PATH), read_only=True)
+
 df = con.execute("""
 SELECT
     f.duree_minutes, f.distance, f.nb_passagers, f.id_vendeur, f.id_tarif,
