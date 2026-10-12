@@ -6,7 +6,6 @@ const port = process.env.PORT;
 
 const routesMetier = require("./routes/metier_routes");
 const verifierMotDePasse = require("./middlewares/auth");
-const reservationRoutes = require("./routes/reservation_routes");
 
 app.use(express.json());
 
@@ -17,7 +16,6 @@ app.use(verifierMotDePasse);
 
 app.use("/metier", routesMetier);
 
-app.use("/api/reservations",reservationRoutes);
 
 
 app.listen(port, () => {

@@ -18,9 +18,13 @@ export class NouvelleReservation {
   arrivee = signal<number | null>(236);
   distance = signal<number | null>(3.2);
 
+  client = signal<number>(1);
+
+
   resultat = signal<number | null>(null);
   erreur = signal<string | null>(null);
   chargement = signal(false);
+  message = "";
 
   predire() {
     const depart = this.depart();
@@ -35,6 +39,7 @@ export class NouvelleReservation {
     this.chargement.set(true);
     this.erreur.set(null);
     this.resultat.set(null);
+    this.message="";
 
     this.service
       .predireDuree({
@@ -58,42 +63,57 @@ export class NouvelleReservation {
       });
   }
   
-//  reserver() {
-//     const depart = this.depart();
-//     const arrivee = this.arrivee();
-//     const distance = this.distance();
+ reserver() {
+    const depart = this.depart();
+    const arrivee = this.arrivee();
+    const distance = this.distance();
+    const client = this.client();
 
+    const date = new Date(this.pickup());
+    
+    const resa_date = date.toISOString().split('T')[0];
 
-//     if (!this.pickup() || depart === null || arrivee === null || distance === null) {
-//       this.erreur.set('Remplis tous les champs.');
-//       return;
-//     }
+    const resa_heure = date.toLocaleTimeString('fr-FR', {hour: '2-digit',minute: '2-digit'});
+    
 
-//     this.chargement.set(true);
-//     this.erreur.set(null);
-//     this.resultat.set(null);
+    if (!this.pickup() || depart === null || arrivee === null || distance === null) {
+      this.erreur.set('Remplis tous les champs.');
+      return;
+    }
 
-//     this.serviceReservation
-//       .reserver({
-//         pickup: this.pickup(),
-//         id_location_depart: depart,
-//         id_location_arrivee: arrivee,
-//         distance,
-//       })
-//       .subscribe({
-//         next: (r) => {
-//          this.resultat.set(r);
-//           this.chargement.set(false);
-//         },
-//         error: (e) => {
-//           const message = e.error?.message;
-//           this.erreur.set(
-//             typeof message === 'string' ? message : "Impossible d'obtenir la prédiction.",
-//           );
-//           this.chargement.set(false);
-//         },
-//       });
-//   }
+    this.chargement.set(true);
+    this.erreur.set(null);
+    this.resultat.set(null);
+    this.message="";
+
+    this.serviceReservation
+      .reserver(
+      {
+        pickup:this.pickup(),
+        uid_client : client,
+        resa_PU_locationID : depart,
+        resa_DO_locationID: arrivee,
+        resa_date: resa_date,
+        resa_heure:resa_heure,
+        estimation_duree_course:distance
+     }
+    )
+      .subscribe({
+        next: (r) => {
+        // this.resultat.set(r.uid_reservation);
+          this.chargement.set(false);
+          this.message="Réservation éffectuée avec succés";
+        },
+        error: (e) => {
+          const message = e.error?.message;
+          this.erreur.set(
+            typeof message === 'string' ? message : "Impossible de faire la réservation.",
+          );
+          this.chargement.set(false);
+        },
+      });
+  } 
+
 }
 
 

@@ -208,5 +208,10 @@ py load.py
 ```
 
 ## Problèmes identifiés
+## Déploiement sur la VM
+
+-   Connecter sur la VM
+-   dans le repertoire frenchcab/api_data lancer le script d'initialisation des bases de données
+
 
 - écrire le fichier du modèle entraîné dans /app/data (volume du conteneur)
