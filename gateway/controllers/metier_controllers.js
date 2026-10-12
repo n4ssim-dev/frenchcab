@@ -82,10 +82,31 @@ async function listeReservations(req, res) {
   }
 }
 
+async function updateReservation(req, res) {
+  try {
+    const { uid_reservation } = req.params;
+    const { statut } = req.body;
+
+    const reponse = await metier_models.updateReservation(
+      uid_reservation,
+      statut
+    );
+    res.status(200).json({
+      success: true,
+      message: "Le statut de la réservation a été modifié avec succès",
+      reponse: reponse.data
+    });
+  } catch (error) {
+    repondreErreur(res, error);
+  }
+}
+
+
 module.exports = {
   getCourses,
   getCourse,
   predireDuree,
   reservation,
-  listeReservations
+  listeReservations,
+  updateReservation
 };

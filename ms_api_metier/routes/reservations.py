@@ -134,10 +134,10 @@ def listerReservations(
     conditions = []
     params = []
     if uid_client is not None:
-        conditions.append("uid_client = ?")
+        conditions.append("r.uid_client = ?")
         params.append(uid_client)
     if statut is not None:
-        conditions.append("statut_resa = ?")
+        conditions.append("r.statut_resa = ?")
         params.append(statut)
     where = " WHERE " + " AND ".join(conditions) if conditions else ""
 

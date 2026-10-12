@@ -1,6 +1,7 @@
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
 import { Reservation, ReservationsService } from '../reservations.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-reservations-table',
@@ -10,8 +11,9 @@ import { Reservation, ReservationsService } from '../reservations.service';
 })
 export class ReservationsTable {
   private service = inject(ReservationsService);
+   //private http = inject(HttpClient);
 
-  /** Date AAAA-MM-JJ : si elle est absente, on affiche toutes les courses. */
+  /** Date AAAA-MM-JJ : si elle est absente, on affiche toutes les reservations. */
   date = input<string | null>(null);
 
   readonly limit = 100;
@@ -26,6 +28,7 @@ export class ReservationsTable {
   chargement = signal(false);
   erreur = signal<string | null>(null);
   nbPages = computed(() => Math.max(1, Math.ceil(this.total() / this.limit)));
+
 
   constructor() {
     effect((onCleanup) => {
@@ -59,5 +62,34 @@ export class ReservationsTable {
   suivant() {
     this.page.update((p) => Math.min(this.nbPages() - 1, p + 1));
   }
+
+changerStatut(uid_reservation: number, statut: string): void {
+  const confirmation = confirm(
+    `Voulez-vous  annuler la réservation ${uid_reservation} ?`
+  );
+
+  if (!confirmation) {
+    return;
+    window.location.reload();
+
+  }
+
+  this.service
+    .updateReservation(uid_reservation, statut)
+    .subscribe({
+      next: (reponse) => {
+        console.log('réservation annulé avec succès', reponse);
+        alert('Le statut de la réservation a été modifié avec succès.');
+        window.location.reload();
+      },
+      error: (erreur) => {
+        console.error('Erreur lors de la modification', erreur);
+        alert('Une erreur est survenue lors de la modification du statut.');
+      }
+    });
 }
+
+
+
+  }
 
