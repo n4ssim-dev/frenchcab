@@ -13,11 +13,6 @@ ZONES_CSV = RAW_DIR / "taxi_zone_lookup.csv"
 OUTPUT_PATH = DATA_DIR / "yellow_tripdata_2026-07_propre.csv"
 REJETS_PATH = REJETS_DIR / "yellow_taxi_lignes_rejetees.csv"
 SQL_DB = DATA_DIR / "yellow_taxi.db"
-<<<<<<< HEAD
-
-REJETS_DIR.mkdir(parents=True, exist_ok=True)
-=======
->>>>>>> dev
 
 REJETS_DIR.mkdir(parents=True, exist_ok=True)
 
