@@ -29,7 +29,8 @@ DATA_DIR = BASE_DIR / "data"
 MODELS_DIR = DATA_DIR / "models"
 
 DB_PATH = DATA_DIR / "yellow_taxi.db"
-MODEL_PATH = MODELS_DIR / "model_duree_extra_trees.joblib"
+MODEL_PATH_1ST = MODELS_DIR / "model_duree_premier.joblib"
+MODEL_PATH_2ND = MODELS_DIR / "model_duree_deuxieme.joblib"
 
 ML_DIR = BASE_DIR / "ml"
 
@@ -252,18 +253,15 @@ df_classement = df_resultats.sort_values(
 meilleur_nom = df_classement.index[0]
 meilleur_model = modeles[meilleur_nom]
 
+deuxieme_nom = df_classement.index[1]
+deuxieme_model = modeles[meilleur_nom]
+
 print("\nMeilleur modele selon la MAE :")
 print(meilleur_nom)
 
-print(
-    f"MAE  : {df_resultats.loc[meilleur_nom, 'MAE (min)']:.3f} min"
-)
-print(
-    f"RMSE : {df_resultats.loc[meilleur_nom, 'RMSE (min)']:.3f} min"
-)
-print(
-    f"R2   : {df_resultats.loc[meilleur_nom, 'R2']:.4f}"
-)
+print(f"MAE  : {df_resultats.loc[meilleur_nom, 'MAE (min)']:.3f} min")
+print(f"RMSE : {df_resultats.loc[meilleur_nom, 'RMSE (min)']:.3f} min")
+print(f"R2   : {df_resultats.loc[meilleur_nom, 'R2']:.4f}")
 
 
 # ============================================================
@@ -338,12 +336,21 @@ artefact = {
     "metriques": df_resultats.loc[meilleur_nom].to_dict()
 }
 
-joblib.dump(artefact, MODEL_PATH)
+second = {
+    "model": deuxieme_model,
+    "nom_modele": deuxieme_nom,
+    "colonnes": list(X_train.columns),
+    "mediane": mediane,
+    "metriques_deuxieme": df_resultats.loc[deuxieme_nom].to_dict()
+}
 
-print(f"\nMeilleur modele sauvegarde : {MODEL_PATH}")
+joblib.dump(artefact, MODEL_PATH_1ST)
+joblib.dump(second, MODEL_PATH_2ND)
+
+print(f"\nMeilleur modele sauvegarde : {MODEL_PATH_1ST}")
 print(f"Modele retenu : {meilleur_nom}")
 
-metadonnees = {
+metadonnees_1er = {
     "algorithme": type(meilleur_model).__name__,
     "nom_modele": meilleur_nom,
     "date_entrainement": datetime.now().isoformat(),
@@ -355,6 +362,19 @@ metadonnees = {
     },
 }
 
+metadonnees_2eme = {
+    "algorithme": type(deuxieme_model).__name__,
+    "nom_modele": deuxieme_nom,
+    "date_entrainement": datetime.now().isoformat(),
+    "metriques": {
+        "mae_minutes": float(df_resultats.loc[deuxieme_nom, "MAE (min)"]),
+        "rmse_minutes": float(df_resultats.loc[deuxieme_nom, "RMSE (min)"]),
+        "r2": float(df_resultats.loc[deuxieme_nom, "R2"]),
+        "mae_naif_minutes": float(mae_naif),
+    },
+}
+
 
 with open(os.path.join(ML_DIR, "model_extra_trees_duree.json"), "w", encoding="utf-8") as f:
-    json.dump(metadonnees, f, indent=4, ensure_ascii=False)
+    json.dump(metadonnees_1er, f, indent=4, ensure_ascii=False)
+    json.dump(metadonnees_2eme, f, indent=4, ensure_ascii=False)
