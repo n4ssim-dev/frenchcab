@@ -15,14 +15,16 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-
+from pathlib import Path
 
 # ============================================================
 # 1. CONFIGURATION
 # ============================================================
 
-DB_PATH = "data/yellow_taxi.db"
-MODEL_PATH = "models/model_duree_extra_trees.joblib"
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
+DB_PATH = DATA_DIR/"yellow_taxi.db"
+MODEL_PATH = DATA_DIR / "models/model_duree_extra_trees.joblib"
 
 os.makedirs("models", exist_ok=True)
 
