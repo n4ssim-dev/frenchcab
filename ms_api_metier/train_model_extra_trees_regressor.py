@@ -16,6 +16,9 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from pathlib import Path
+import json
+from datetime import datetime
+
 
 # ============================================================
 # 1. CONFIGURATION
@@ -27,6 +30,8 @@ MODELS_DIR = DATA_DIR / "models"
 
 DB_PATH = DATA_DIR / "yellow_taxi.db"
 MODEL_PATH = MODELS_DIR / "model_duree_extra_trees.joblib"
+
+ML_DIR = BASE_DIR / "ml"
 
 MODELS_DIR.mkdir(parents=True, exist_ok=True)
 # ============================================================
@@ -112,7 +117,7 @@ plt.savefig(
     dpi=120
 )
 
-plt.savefig("Matrice_correlation_duree_trajet_ExtraTreesRegressor.png", dpi=150, bbox_inches="tight")
+plt.savefig(os.path.join(MATRICES_DIR, "Matrice_correlation_duree_trajet_ExtraTreesRegressor.png"), dpi=150, bbox_inches="tight")
 plt.close()
 
 
@@ -381,10 +386,7 @@ plt.title("Comparaison des modeles - Duree des trajets")
 plt.legend()
 plt.tight_layout()
 
-plt.savefig(
-    "data/comparaison_modeles_duree.png",
-    dpi=120
-)
+plt.savefig(os.path.join(DATA_DIR, "comparaison_modeles_duree.png"), dpi=120)
 
 plt.show()
 plt.close()
@@ -406,3 +408,19 @@ joblib.dump(artefact, MODEL_PATH)
 
 print(f"\nMeilleur modele sauvegarde : {MODEL_PATH}")
 print(f"Modele retenu : {meilleur_nom}")
+
+metadonnees = {
+    "algorithme": type(meilleur_model).__name__,
+    "nom_modele": meilleur_nom,
+    "date_entrainement": datetime.now().isoformat(),
+    "metriques": {
+        "mae_minutes": float(df_resultats.loc[meilleur_nom, "MAE (min)"]),
+        "rmse_minutes": float(df_resultats.loc[meilleur_nom, "RMSE (min)"]),
+        "r2": float(df_resultats.loc[meilleur_nom, "R2"]),
+        "mae_naif_minutes": float(mae_naif),
+    },
+}
+
+
+with open(os.path.join(ML_DIR, "model_extra_trees_duree.json"), "w", encoding="utf-8") as f:
+    json.dump(metadonnees, f, indent=4, ensure_ascii=False)
