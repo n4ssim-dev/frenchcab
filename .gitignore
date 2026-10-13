@@ -6,3 +6,4 @@ node_modules/
 .pytest_cache/
 ms_api_metier/models/
 .vscode/
+ms_api_metier/ml/*.json
