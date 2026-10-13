@@ -6,7 +6,7 @@
 from pathlib import Path
 import joblib
 import json
-
+import sklearn
 
 # ============================================================
 # CONFIGURATION
@@ -18,9 +18,9 @@ DATA_DIR = PROJECT_DIR / "data"
 MODELS_DIR = DATA_DIR / "models"
 
 DB_PATH = DATA_DIR / "yellow_taxi.db"
-MODEL_PATH = MODELS_DIR / "model_duree.joblib"
+MODEL_PATH = MODELS_DIR / "model_duree_extra_trees.joblib"
 
-MODEL_VERSION = "1.0.0"
+MODEL_VERSION = sklearn.__version__
 
 
 # ============================================================
@@ -60,21 +60,3 @@ def afficher_infos_modele():
 if __name__ == "__main__":
     charger_infos_modele()
     afficher_infos_modele()
-
-
-# def charger_infos_modele():
-#     # retourne les informations du modèle
-#     pass
-
-
-# def afficher_infos_modele():
-#     # affiche les informations proprement
-#     pass
-
-# def afficher_historique_metriques():
-#     # afficher l'historique des métriques
-#     pass
-
-# def derniere_version_modele():
-#     # afficher la date d'entrainement du dernier modèle
-#     pass
