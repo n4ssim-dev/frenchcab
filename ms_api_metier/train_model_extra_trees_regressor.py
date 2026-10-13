@@ -91,31 +91,17 @@ plt.figure(figsize=(14, 12))
 plt.imshow(corr, cmap="coolwarm", vmin=-1, vmax=1)
 plt.colorbar(label="Correlation")
 
-plt.xticks(
-    range(len(corr.columns)),
-    corr.columns,
-    rotation=45,
-    ha="right"
-)
+plt.xticks(range(len(corr.columns)), corr.columns, rotation=45, ha="right")
 plt.yticks(range(len(corr.columns)), corr.columns)
 
 for i in range(len(corr.columns)):
     for j in range(len(corr.columns)):
-        plt.text(
-            j, i, f"{corr.iloc[i, j]:.2f}",
-            ha="center", va="center", fontsize=7
-        )
+        plt.text(j, i, f"{corr.iloc[i, j]:.2f}", ha="center", va="center", fontsize=7)
 
 plt.title("Matrice de correlation - Duree trajet")
 plt.tight_layout()
 
-plt.savefig(
-    os.path.join(
-        MATRICES_DIR,
-        "Matrice_correlation_duree_trajet_ExtraTreesRegressor.png"
-    ),
-    dpi=120
-)
+plt.savefig(os.path.join(MATRICES_DIR, "Matrice_correlation_duree_trajet_ExtraTreesRegressor.png"), dpi=120)
 
 plt.savefig(os.path.join(MATRICES_DIR, "Matrice_correlation_duree_trajet_ExtraTreesRegressor.png"), dpi=150, bbox_inches="tight")
 plt.close()
@@ -128,27 +114,16 @@ plt.close()
 print("\n2. Preparation des variables")
 print("-" * 50)
 
-df["meme_zone"] = (
-    df["id_location_depart"] == df["id_location_arrivee"]
-).astype(int)
+df["meme_zone"] = (df["id_location_depart"] == df["id_location_arrivee"]).astype(int)
 
 df["est_weekend"] = df["est_weekend"].astype(int)
 
-df["trajet_aeroport"] = (
-    df[["sz_depart", "sz_arrivee"]]
-    .isin(["Airports", "EWR"])
-    .any(axis=1)
-    .astype(int)
-)
+df["trajet_aeroport"] = (df[["sz_depart", "sz_arrivee"]].isin(["Airports", "EWR"]).any(axis=1).astype(int))
 
 # Encodage cyclique des 48 creneaux de 30 minutes
-df["creneau_sin"] = np.sin(
-    2 * np.pi * df["creneau_jour"] / 48
-)
+df["creneau_sin"] = np.sin(2 * np.pi * df["creneau_jour"] / 48)
 
-df["creneau_cos"] = np.cos(
-    2 * np.pi * df["creneau_jour"] / 48
-)
+df["creneau_cos"] = np.cos(2 * np.pi * df["creneau_jour"] / 48)
 
 
 # ============================================================
@@ -157,40 +132,20 @@ df["creneau_cos"] = np.cos(
 
 date_coupure = df["date_heure"].quantile(0.8)
 
-train = df[
-    df["date_heure"] <= date_coupure
-].drop(columns="date_heure").copy()
+train = df[df["date_heure"] <= date_coupure].drop(columns="date_heure").copy()
 
-test = df[
-    df["date_heure"] > date_coupure
-].drop(columns="date_heure").copy()
+test = df[df["date_heure"] > date_coupure].drop(columns="date_heure").copy()
 
 
 # Encodage des variables categorielles
-colonnes_cat = [
-    "arr_depart",
-    "arr_arrivee",
-    "sz_depart",
-    "sz_arrivee"
-]
+colonnes_cat = ["arr_depart", "arr_arrivee", "sz_depart", "sz_arrivee"]
 
-train = pd.get_dummies(
-    train,
-    columns=colonnes_cat,
-    dtype=int
-)
+train = pd.get_dummies(train, columns=colonnes_cat, dtype=int)
 
-test = pd.get_dummies(
-    test,
-    columns=colonnes_cat,
-    dtype=int
-)
+test = pd.get_dummies(test, columns=colonnes_cat, dtype=int)
 
 # Meme colonnes et meme ordre pour train et test
-test = test.reindex(
-    columns=train.columns,
-    fill_value=0
-)
+test = test.reindex(columns=train.columns, fill_value=0)
 
 
 # Remplacement des valeurs manquantes
@@ -262,9 +217,7 @@ for nom, modele in modeles.items():
     # Metriques
     mae = mean_absolute_error(y_test, y_pred)
 
-    rmse = np.sqrt(
-        mean_squared_error(y_test, y_pred)
-    )
+    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 
     r2 = r2_score(y_test, y_pred)
 
@@ -338,13 +291,7 @@ print(f"R2 naive   : {r2_naif:.4f}")
 print("\n6. Importance des variables")
 print("-" * 50)
 
-importances = (
-    pd.Series(
-        meilleur_model.feature_importances_,
-        index=X_train.columns
-    )
-    .sort_values(ascending=False)
-)
+importances = (pd.Series(meilleur_model.feature_importances_,index=X_train.columns).sort_values(ascending=False))
 
 print(f"Modele analyse : {meilleur_nom}")
 print("\nTop 10 variables :")
@@ -352,15 +299,9 @@ print(importances.head(10).round(4))
 
 
 # Importance totale des variables de trafic selectionnees
-trafic = importances[
-    importances.index.str.startswith(
-        ("lenteur_", "nb_lag", "nb_roll")
-    )
-]
+trafic = importances[importances.index.str.startswith(("lenteur_", "nb_lag", "nb_roll"))]
 
-print(
-    f"\nImportance totale du trafic : {trafic.sum():.4f}"
-)
+print(f"\nImportance totale du trafic : {trafic.sum():.4f}")
 print(trafic.round(4))
 
 
@@ -370,16 +311,9 @@ print(trafic.round(4))
 
 plt.figure(figsize=(8, 5))
 
-plt.bar(
-    df_resultats.index,
-    df_resultats["MAE (min)"]
-)
+plt.bar(df_resultats.index, df_resultats["MAE (min)"])
 
-plt.axhline(
-    mae_naif,
-    linestyle="--",
-    label="Modele naif"
-)
+plt.axhline(mae_naif, linestyle="--", label="Modele naif")
 
 plt.ylabel("MAE (minutes)")
 plt.title("Comparaison des modeles - Duree des trajets")
