@@ -23,11 +23,12 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
-DB_PATH = DATA_DIR/"yellow_taxi.db"
-MODEL_PATH = DATA_DIR / "models/model_duree_extra_trees.joblib"
+MODELS_DIR = DATA_DIR / "models"
 
-os.makedirs("models", exist_ok=True)
+DB_PATH = DATA_DIR / "yellow_taxi.db"
+MODEL_PATH = MODELS_DIR / "model_duree_extra_trees.joblib"
 
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 # ============================================================
 # 2. EXTRACTION DES DONNEES
 # ============================================================
@@ -75,8 +76,8 @@ print(f"Nombre de lignes : {len(df)}")
 print("\n1. Matrice de correlation du modéle Extra Trees Regressors")
 print("-" * 50)
 
-dossier_sortie = "data/Matrices_correlation/"
-os.makedirs(dossier_sortie, exist_ok=True)
+MATRICES_DIR = DATA_DIR / "Matrices_correlation"
+MATRICES_DIR.mkdir(parents=True, exist_ok=True)
 
 corr = df.corr(numeric_only=True)
 print(corr)
@@ -105,7 +106,7 @@ plt.tight_layout()
 
 plt.savefig(
     os.path.join(
-        dossier_sortie,
+        MATRICES_DIR,
         "Matrice_correlation_duree_trajet_ExtraTreesRegressor.png"
     ),
     dpi=120
