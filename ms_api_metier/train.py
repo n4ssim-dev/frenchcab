@@ -22,6 +22,8 @@ MATRICES_DIR.mkdir(parents=True, exist_ok=True)
 
 MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
+ML_DIR = BASE_DIR / "ml"
+
 con = duckdb.connect(str(DB_PATH), read_only=True)
 
 df = con.execute("""
@@ -160,5 +162,5 @@ metadonnees = {
     "mae_naif": mae_naif
 }
 
-with open("model_duree.json", "w", encoding="utf-8") as f:
+with open(os.path.join(ML_DIR, "model_duree.json"), "w", encoding="utf-8") as f:
     json.dump(metadonnees, f, indent=4, ensure_ascii=False)
