@@ -16,6 +16,7 @@ SQL_DB = DATA_DIR / "yellow_taxi.db"
 
 REJETS_DIR.mkdir(parents=True, exist_ok=True)
 
+
 def lire_csv():
     df = pd.read_csv(CSV_PATH)
     return df

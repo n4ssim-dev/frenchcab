@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import json
+from datetime import datetime
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -148,3 +150,15 @@ print(f"\nModèle sauvegardé : {MODEL_PATH}")
 trafic = importances[importances.index.str.startswith(("lenteur_", "nb_lag", "nb_roll"))]
 print(f"\nPoids total des variables de trafic : {trafic.sum():.3f}")
 print(trafic.round(3))
+
+metadonnees = {
+    "modele": type(rf).__name__,
+    "date_entrainement": datetime.now().isoformat(),
+    "mae_minutes": mae,
+    "rmse": rmse,
+    "r2" : r2,
+    "mae_naif": mae_naif
+}
+
+with open("model_duree.json", "w", encoding="utf-8") as f:
+    json.dump(metadonnees, f, indent=4, ensure_ascii=False)
