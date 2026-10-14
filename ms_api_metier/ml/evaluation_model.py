@@ -17,7 +17,8 @@ from sklearn.metrics import mean_absolute_error
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 DB_PATH = DATA_DIR / "yellow_taxi.db"
-MODEL_PATH = DATA_DIR / "models" / "model_duree_extra_trees.joblib"
+MODEL_PATH_PREMIER = DATA_DIR / "models" / "model_duree_premier.joblib"
+MODEL_PATH_DEUXIEME = DATA_DIR / "models" / "model_duree_deuxieme.joblib"
 RESULTAT_PATH = DATA_DIR / "evaluation" / "evaluation.json"
 
 COLONNES_CAT = ["arr_depart", "arr_arrivee", "sz_depart", "sz_arrivee"]
@@ -72,11 +73,11 @@ def preparer_donnees_evaluation(df, bundle):
     return X, y
 
 
-def evaluer_modele(date_debut):
-    if not MODEL_PATH.exists():
-        raise FileNotFoundError(f"Modèle introuvable : {MODEL_PATH}")
+def evaluer_premier_modele(date_debut):
+    if not MODEL_PATH_PREMIER.exists():
+        raise FileNotFoundError(f"Modèle introuvable : {MODEL_PATH_PREMIER}")
 
-    bundle = joblib.load(MODEL_PATH)
+    bundle = joblib.load(MODEL_PATH_PREMIER)
     df = charger_donnees_evaluation(date_debut)
     X, y = preparer_donnees_evaluation(df, bundle)
 
@@ -84,7 +85,7 @@ def evaluer_modele(date_debut):
     mae = mean_absolute_error(y, y_pred)
 
     return {
-        "fichier_modele": MODEL_PATH.name,
+        "fichier_modele": MODEL_PATH_PREMIER.name,
         "algorithme": type(bundle["model"]).__name__,
         "date_debut_donnees": date_debut,
         "nb_trajets": len(y),
@@ -92,6 +93,25 @@ def evaluer_modele(date_debut):
         "date_evaluation": datetime.now().isoformat(),
     }
 
+def evaluer_deuxieme_modele(date_debut):
+    if not MODEL_PATH_DEUXIEME.exists():
+        raise FileNotFoundError(f"Modèle introuvable : {MODEL_PATH_DEUXIEME}")
+
+    bundle = joblib.load(MODEL_PATH_DEUXIEME)
+    df = charger_donnees_evaluation(date_debut)
+    X, y = preparer_donnees_evaluation(df, bundle)
+
+    y_pred = bundle["model"].predict(X)
+    mae = mean_absolute_error(y, y_pred)
+
+    return {
+        "fichier_modele": MODEL_PATH_DEUXIEME.name,
+        "algorithme": type(bundle["model"]).__name__,
+        "date_debut_donnees": date_debut,
+        "nb_trajets": len(y),
+        "mae_minutes": round(float(mae), 3),
+        "date_evaluation": datetime.now().isoformat(),
+    }
 
 def verifier_seuil(mae, seuil):
     return mae <= seuil
@@ -100,16 +120,20 @@ def verifier_seuil(mae, seuil):
 def main():
     DATE_DEBUT_EVALUATION = "2026-07-28"
     SEUIL_MAE_MINUTES = 6.0
-    resultat = evaluer_modele(DATE_DEBUT_EVALUATION)
-    resultat["seuil_minutes"] = SEUIL_MAE_MINUTES
-    resultat["seuil_respecte"] = verifier_seuil(resultat["mae_minutes"], SEUIL_MAE_MINUTES)
+    resultat_premier = evaluer_premier_modele(DATE_DEBUT_EVALUATION)
+    resultat_premier["seuil_minutes"] = SEUIL_MAE_MINUTES
+    resultat_premier["seuil_respecte"] = verifier_seuil(resultat_premier["mae_minutes"], SEUIL_MAE_MINUTES)
+
+    resultat_deuxieme = evaluer_deuxieme_modele(DATE_DEBUT_EVALUATION)
+    resultat_deuxieme["seuil_minutes"] = SEUIL_MAE_MINUTES
+    resultat_deuxieme["seuil_respecte"] = verifier_seuil(resultat_deuxieme["mae_minutes"], SEUIL_MAE_MINUTES)
 
     RESULTAT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(RESULTAT_PATH, "w", encoding="utf-8") as f:
-        json.dump(resultat, f, indent=4, ensure_ascii=False)
+        json.dump({"premier_modele" : resultat_premier, "deuxieme_modele" : resultat_deuxieme}, f, indent=4, ensure_ascii=False)
 
-    print(json.dumps(resultat, indent=4, ensure_ascii=False))
-    return 0 if resultat["seuil_respecte"] else 1
+    print(json.dumps(resultat_premier, indent=4, ensure_ascii=False))
+    return 0 if resultat_premier["seuil_respecte"] else 1
 
 if __name__ == "__main__":
     sys.exit(main())
