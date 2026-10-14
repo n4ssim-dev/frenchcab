@@ -136,6 +136,8 @@ def main_evaluation(date_debut, seuil):
     resultat_deuxieme = evaluer_deuxieme_modele(date_debut, X2, y2)
     resultat_premier["seuil_respecte"] = verifier_seuil(resultat_premier["mae_minutes"], seuil)
     resultat_deuxieme["seuil_respecte"] = verifier_seuil(resultat_deuxieme["mae_minutes"], seuil)
+    resultat_premier["seuil_minutes"] = seuil
+    resultat_deuxieme["seuil_minutes"] = seuil
 
     RESULTAT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(RESULTAT_PATH, "a", encoding="utf-8") as f:

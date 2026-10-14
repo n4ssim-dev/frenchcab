@@ -28,7 +28,7 @@ def prepa_rapport_final():
 
     entrainement_prepa = []
     evaluation_prepa = []
-    for modele in rapport_entrainement[0]:
+    for modele in rapport_entrainement.values():
         entrainement_prepa.append({
             "nom_modele" : modele["algorithme"],
             "date_entrainement" : modele["date_entrainement"],
@@ -38,7 +38,7 @@ def prepa_rapport_final():
             "metrique_mae_naif_minutes" : modele["metriques"]["mae_naif_minutes"],
         })
 
-    for modele in rapport_evaluation[0]:
+    for modele in rapport_evaluation.values():
         evaluation_prepa.append({
             "nom_modele": modele["algorithme"],
             "date_debut_donnees": modele["date_debut_donnees"],
@@ -59,9 +59,9 @@ def prepa_rapport_final():
                     "date_evaluation": evaluation_prepa[0]["date_evaluation"],
                     "date_debut_donnees_eval": evaluation_prepa[0]["date_debut_donnees"],
                     "nb_trajets_eval": evaluation_prepa[0]["nb_trajets"],
-                    "metrique_mae_minutes_entrainement" : entrainement_prepa[0]["metriques"]["mae_minutes"],
+                    "metrique_mae_minutes_entrainement" : entrainement_prepa[0]["metrique_mae_minutes"],
                     "mae_minutes_eval": evaluation_prepa[0]["mae_minutes"],
-                    "delta_mae_minutes" : entrainement_prepa[0]["metriques"]["mae_minutes"] - evaluation_prepa[0]["mae_minutes"],
+                    "delta_mae_minutes" : evaluation_prepa[0]["mae_minutes"] - entrainement_prepa[0]["metrique_mae_minutes"],
                     "seuil_minutes_eval": evaluation_prepa[0]["seuil_minutes"],
                     "seuil_respecte_eval": evaluation_prepa[0]["seuil_respecte"]
                 }, "modele_secondaire": {
@@ -70,9 +70,9 @@ def prepa_rapport_final():
                     "date_evaluation": evaluation_prepa[1]["date_evaluation"],
                     "date_debut_donnees_eval": evaluation_prepa[1]["date_debut_donnees"],
                     "nb_trajets_eval": evaluation_prepa[1]["nb_trajets"],
-                    "metrique_mae_minutes_entrainement" : entrainement_prepa[1]["metriques"]["mae_minutes"],
+                   "metrique_mae_minutes_entrainement" : entrainement_prepa[1]["metrique_mae_minutes"],
                     "mae_minutes_eval": evaluation_prepa[1]["mae_minutes"],
-                    "delta_mae_minutes" : entrainement_prepa[1]["metriques"]["mae_minutes"] - evaluation_prepa[1]["mae_minutes"],
+                    "delta_mae_minutes" : evaluation_prepa[1]["mae_minutes"] - entrainement_prepa[1]["metrique_mae_minutes"],
                     "seuil_minutes_eval": evaluation_prepa[1]["seuil_minutes"],
                     "seuil_respecte_eval": evaluation_prepa[1]["seuil_respecte"]
                 }
