@@ -73,13 +73,11 @@ def preparer_donnees_evaluation(df, bundle):
     return (X, y)
 
 
-def evaluer_premier_modele(date_debut):
+def evaluer_premier_modele(date_debut, X, y):
     if not MODEL_PATH_PREMIER.exists():
         raise FileNotFoundError(f"Modèle introuvable : {MODEL_PATH_PREMIER}")
 
     bundle = joblib.load(MODEL_PATH_PREMIER)
-    df = charger_donnees_evaluation(date_debut)
-    X, y = preparer_donnees_evaluation(df, bundle)
 
     y_pred = bundle["model"].predict(X)
     mae = mean_absolute_error(y, y_pred)
@@ -93,13 +91,11 @@ def evaluer_premier_modele(date_debut):
         "date_evaluation": datetime.now().isoformat(),
     }
 
-def evaluer_deuxieme_modele(date_debut):
+def evaluer_deuxieme_modele(date_debut, X, y):
     if not MODEL_PATH_DEUXIEME.exists():
         raise FileNotFoundError(f"Modèle introuvable : {MODEL_PATH_DEUXIEME}")
 
     bundle = joblib.load(MODEL_PATH_DEUXIEME)
-    df = charger_donnees_evaluation(date_debut)
-    X, y = preparer_donnees_evaluation(df, bundle)
 
     y_pred = bundle["model"].predict(X)
     mae = mean_absolute_error(y, y_pred)
@@ -121,25 +117,32 @@ def main(DATE_DEBUT_EVALUATION = "2026-07-28", SEUIL_MAE_MINUTES = 6.0):
 
     resultat_premier = evaluer_premier_modele(DATE_DEBUT_EVALUATION)
     resultat_premier["seuil_minutes"] = SEUIL_MAE_MINUTES
-    resultat_premier["seuil_respecte"] = verifier_seuil(resultat_premier["mae_minutes"], SEUIL_MAE_MINUTES)
+    
 
     resultat_deuxieme = evaluer_deuxieme_modele(DATE_DEBUT_EVALUATION)
     resultat_deuxieme["seuil_minutes"] = SEUIL_MAE_MINUTES
-    resultat_deuxieme["seuil_respecte"] = verifier_seuil(resultat_deuxieme["mae_minutes"], SEUIL_MAE_MINUTES)
+    
 
-    RESULTAT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(RESULTAT_PATH, "a", encoding="utf-8") as f:
-        json.dump({"premier_modele" : resultat_premier, "deuxieme_modele" : resultat_deuxieme}, f, indent=4, ensure_ascii=False)
-
-    print(json.dumps(resultat_premier, indent=4, ensure_ascii=False))
-    return 0 if resultat_premier["seuil_respecte"] else 1
+    
 
 
 def main_evaluation(date_debut, seuil):
     df = charger_donnees_evaluation(date_debut)
     bundle = joblib.load(MODEL_PATH_PREMIER)
-    choix_x_y = preparer_donnees_evaluation(df, bundle)
-    mae_premier = evaluer_premier_modele(date_debut)
-    mae_deuxieme = evaluer_deuxieme_modele(date_debut)
-    verifier_seuil(mae_premier[4], mae_deuxieme[4], seuil)
+    bundle2 = joblib.load(MODEL_PATH_DEUXIEME)
+    X1, y1 = preparer_donnees_evaluation(df, bundle)
+    X2, y2 = preparer_donnees_evaluation(df, bundle2)
+    resultat_premier = evaluer_premier_modele(date_debut, X1, y1)
+    resultat_deuxieme = evaluer_deuxieme_modele(date_debut, X2, y2)
+    resultat_premier["seuil_respecte"] = verifier_seuil(resultat_premier["mae_minutes"], seuil)
+    resultat_deuxieme["seuil_respecte"] = verifier_seuil(resultat_deuxieme["mae_minutes"], seuil)
+    resultat_premier["seuil_minutes"] = seuil
+    resultat_deuxieme["seuil_minutes"] = seuil
+
+    RESULTAT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(RESULTAT_PATH, "a", encoding="utf-8") as f:
+        f.write(json.dumps({"premier_modele": resultat_premier, "deuxieme_modele": resultat_deuxieme}, ensure_ascii=False) + "\n")
+
+    print(json.dumps(resultat_premier, indent=4, ensure_ascii=False))
+    return 0 if resultat_premier["seuil_respecte"] else 1
 
