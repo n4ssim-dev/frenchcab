@@ -117,9 +117,8 @@ def verifier_seuil(mae, seuil):
     return mae <= seuil
 
 
-def main():
-    DATE_DEBUT_EVALUATION = "2026-07-28"
-    SEUIL_MAE_MINUTES = 6.0
+def main(DATE_DEBUT_EVALUATION = "2026-07-28", SEUIL_MAE_MINUTES = 6.0):
+
     resultat_premier = evaluer_premier_modele(DATE_DEBUT_EVALUATION)
     resultat_premier["seuil_minutes"] = SEUIL_MAE_MINUTES
     resultat_premier["seuil_respecte"] = verifier_seuil(resultat_premier["mae_minutes"], SEUIL_MAE_MINUTES)
@@ -129,7 +128,7 @@ def main():
     resultat_deuxieme["seuil_respecte"] = verifier_seuil(resultat_deuxieme["mae_minutes"], SEUIL_MAE_MINUTES)
 
     RESULTAT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(RESULTAT_PATH, "w", encoding="utf-8") as f:
+    with open(RESULTAT_PATH, "a", encoding="utf-8") as f:
         json.dump({"premier_modele" : resultat_premier, "deuxieme_modele" : resultat_deuxieme}, f, indent=4, ensure_ascii=False)
 
     print(json.dumps(resultat_premier, indent=4, ensure_ascii=False))

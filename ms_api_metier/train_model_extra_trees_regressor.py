@@ -35,6 +35,7 @@ MODEL_VERSION = sklearn.__version__
 EVALUATION_DIR = DATA_DIR / "evaluation"
 EVALUATION_DIR.mkdir(parents=True, exist_ok=True)
 
+EVALUATION_DIR = DATA_DIR / "evaluation"
 ML_DIR = BASE_DIR / "ml"
 
 MODELS_DIR.mkdir(parents=True, exist_ok=True)
