@@ -35,7 +35,6 @@ MODEL_VERSION = sklearn.__version__
 EVALUATION_DIR = DATA_DIR / "evaluation"
 EVALUATION_DIR.mkdir(parents=True, exist_ok=True)
 
-EVALUATION_DIR = DATA_DIR / "evaluation"
 ML_DIR = BASE_DIR / "ml"
 
 MODELS_DIR.mkdir(parents=True, exist_ok=True)
@@ -431,7 +430,7 @@ def sauvegarde_modele_choisi(meilleur_model, meilleur_nom, X_train, mediane, df_
     }
 
     with open(os.path.join(EVALUATION_DIR, "rapport_entrainement_modeles.json"), "a", encoding="utf-8") as f:
-        json.dump({"premier_modele" : metadonnees_1er, "deuxieme_modele" : metadonnees_2eme}, f, indent=4, ensure_ascii=False)
+        f.write(json.dumps({"premier_modele": metadonnees_1er, "deuxieme_modele": metadonnees_2eme}, ensure_ascii=False) + "\n")
 
     print ("modèle sauvegardé et rapports réalisés")
 

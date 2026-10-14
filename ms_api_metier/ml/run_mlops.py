@@ -10,20 +10,25 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 ML_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
-RAPPORT_ENTRAINEMENT_PATH = ML_DIR / "model_extra_trees_duree.json"
+RAPPORT_ENTRAINEMENT_PATH = DATA_DIR / "evaluation" / "rapport_entrainement_modeles.json"
 EVALUATION_PATH = DATA_DIR / "evaluation" / "evaluation.json"
-RAPPORT_FINAL = DATA_DIR / "evaluation" / "rapport_final.json"
+
 # appelle les deux
 # produit le JSON final
 # exit(0) ou exit(1)
+def lire_dernier_run(path):
+    with open(path, encoding="utf-8") as f:
+        lignes = [ligne for ligne in f if ligne.strip()]
+    return json.loads(lignes[-1])
 
-def prepa_rapport_final(DATE_DEBUT_EVALUATION = "2026-07-28", SEUIL_MAE_MINUTES = 6.0):
-    df_rapport_entrainement = pd.read_json(RAPPORT_ENTRAINEMENT_PATH)
-    df_rapport_evaluation = pd.read_json(EVALUATION_PATH)
-    
+
+def prepa_rapport_final():
+    rapport_entrainement = lire_dernier_run(RAPPORT_ENTRAINEMENT_PATH)
+    rapport_evaluation = lire_dernier_run(EVALUATION_PATH)
+
     entrainement_prepa = []
     evaluation_prepa = []
-    for modele in df_rapport_entrainement[0]:
+    for modele in rapport_entrainement[0]:
         entrainement_prepa.append({
             "nom_modele" : modele["algorithme"],
             "date_entrainement" : modele["date_entrainement"],
@@ -33,7 +38,7 @@ def prepa_rapport_final(DATE_DEBUT_EVALUATION = "2026-07-28", SEUIL_MAE_MINUTES 
             "metrique_mae_naif_minutes" : modele["metriques"]["mae_naif_minutes"],
         })
 
-    for modele in df_rapport_evaluation[0]:
+    for modele in rapport_evaluation[0]:
         evaluation_prepa.append({
             "nom_modele": modele["algorithme"],
             "date_debut_donnees": modele["date_debut_donnees"],
@@ -73,8 +78,11 @@ def prepa_rapport_final(DATE_DEBUT_EVALUATION = "2026-07-28", SEUIL_MAE_MINUTES 
                 }
             })
     return prepa_rapport_final
-    
+
+
+
 def main():
+    # contrôle du seuil et date debut
     DATE_DEBUT_EVALUATION = "2026-07-28"
     SEUIL_MAE_MINUTES = 6.0
 
@@ -82,20 +90,18 @@ def main():
     main_train()
 
     #run evaluation
-    main_evaluation()
+    main_evaluation(DATE_DEBUT_EVALUATION, SEUIL_MAE_MINUTES)
     #run prepation rapport
-    dict_final = prepa_rapport_final(DATE_DEBUT_EVALUATION = "2026-07-28", SEUIL_MAE_MINUTES = 6.0)
+    dict_final = prepa_rapport_final()
 
     #creation json rapport final
-
+    maintenant = datetime.now()
+    RAPPORT_FINAL = DATA_DIR / "evaluation" / f"rapport_final_{maintenant.strftime('%Y-%m-%d_%H-%M-%S')}.json"
     with open(RAPPORT_FINAL, "a", encoding="utf-8") as f:
-        json.dump({"date_rapport" : datetime.now().isoformat() ,"rapport" : dict_final}, f, indent=4, ensure_ascii=False)
+        json.dump({"date_rapport" : maintenant.isoformat() ,"rapport" : dict_final}, f, indent=4, ensure_ascii=False)
         
     
-    
     # affichage
-
-    # contrôle du seuil
 
 if __name__ == "__main__":
     main()
