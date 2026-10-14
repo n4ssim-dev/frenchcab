@@ -1,5 +1,6 @@
 from model_info import charger_infos_modele
-from evaluation_model import main
+from evaluation_model import main_evaluation
+from train_ml_models import main_train
 from pathlib import Path
 import json
 import pandas as pd
@@ -78,9 +79,10 @@ def main():
     SEUIL_MAE_MINUTES = 6.0
 
     #run train_model_extra
+    main_train()
 
     #run evaluation
-
+    main_evaluation()
     #run prepation rapport
     dict_final = prepa_rapport_final(DATE_DEBUT_EVALUATION = "2026-07-28", SEUIL_MAE_MINUTES = 6.0)
 
@@ -89,13 +91,6 @@ def main():
     with open(RAPPORT_FINAL, "a", encoding="utf-8") as f:
         json.dump({"date_rapport" : datetime.now().isoformat() ,"rapport" : dict_final}, f, indent=4, ensure_ascii=False)
         
-    infos = charger_infos_modele()
-
-    resultat = evaluer_modele()
-
-    # construction du JSON final
-    
-
     
     
     # affichage
