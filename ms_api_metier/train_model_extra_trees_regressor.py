@@ -32,6 +32,7 @@ DB_PATH = DATA_DIR / "yellow_taxi.db"
 MODEL_PATH_1ST = MODELS_DIR / "model_duree_premier.joblib"
 MODEL_PATH_2ND = MODELS_DIR / "model_duree_deuxieme.joblib"
 
+EVALUATION_DIR = DATA_DIR / "evaluation"
 ML_DIR = BASE_DIR / "ml"
 
 MODELS_DIR.mkdir(parents=True, exist_ok=True)
@@ -375,6 +376,6 @@ metadonnees_2eme = {
 }
 
 
-with open(os.path.join(ML_DIR, "model_extra_trees_duree.json"), "w", encoding="utf-8") as f:
-    json.dump(metadonnees_1er, f, indent=4, ensure_ascii=False)
+with open(os.path.join(EVALUATION_DIR, "rapport_entrainement_modeles.json"), "a", encoding="utf-8") as f:
+    json.dump({"premier_modele" : metadonnees_1er, "deuxieme_modele" : metadonnees_2eme}, f, indent=4, ensure_ascii=False)
     json.dump(metadonnees_2eme, f, indent=4, ensure_ascii=False)
