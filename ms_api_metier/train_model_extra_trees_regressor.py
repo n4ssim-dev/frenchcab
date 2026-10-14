@@ -293,13 +293,8 @@ def comparaison_resulats(resultats, modeles):
     deuxieme_nom = df_classement.index[1]
     deuxieme_model = modeles[deuxieme_nom]
 
-<<<<<<< HEAD
     print("\nMeilleur modele selon la MAE :")
     print(meilleur_nom)
-=======
-deuxieme_nom = df_classement.index[1]
-deuxieme_model = modeles[deuxieme_nom]
->>>>>>> dev
 
     print(f"MAE  : {df_resultats.loc[meilleur_nom, 'MAE (min)']:.3f} min")
     print(f"RMSE : {df_resultats.loc[meilleur_nom, 'RMSE (min)']:.3f} min")
