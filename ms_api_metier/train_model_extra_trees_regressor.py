@@ -254,7 +254,7 @@ meilleur_nom = df_classement.index[0]
 meilleur_model = modeles[meilleur_nom]
 
 deuxieme_nom = df_classement.index[1]
-deuxieme_model = modeles[meilleur_nom]
+deuxieme_model = modeles[deuxieme_nom]
 
 print("\nMeilleur modele selon la MAE :")
 print(meilleur_nom)
