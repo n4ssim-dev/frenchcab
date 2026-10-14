@@ -70,7 +70,7 @@ def preparer_donnees_evaluation(df, bundle):
     y = df["duree_minutes"]
     X = df.reindex(columns=bundle["colonnes"], fill_value=0)
     X = X.fillna(bundle["mediane"])
-    return X, y
+    return (X, y)
 
 
 def evaluer_premier_modele(date_debut):
@@ -134,5 +134,12 @@ def main(DATE_DEBUT_EVALUATION = "2026-07-28", SEUIL_MAE_MINUTES = 6.0):
     print(json.dumps(resultat_premier, indent=4, ensure_ascii=False))
     return 0 if resultat_premier["seuil_respecte"] else 1
 
-if __name__ == "__main__":
-    sys.exit(main())
+
+def main_evaluation(date_debut, seuil):
+    df = charger_donnees_evaluation(date_debut)
+    bundle = joblib.load(MODEL_PATH_PREMIER)
+    choix_x_y = preparer_donnees_evaluation(df, bundle)
+    mae_premier = evaluer_premier_modele(date_debut)
+    mae_deuxieme = evaluer_deuxieme_modele(date_debut)
+    verifier_seuil(mae_premier[4], mae_deuxieme[4], seuil)
+
