@@ -123,35 +123,62 @@ https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
 ```
 
 
-## Commandes à executer
+### Commandes à executer
 ```
 python3 -m venv .venv
 . .venv/Scripts/activate 
 pip install -r requirements.txt
 ```
 
-## Téléchargement des fichiers data
+### Téléchargement des fichiers data
 
-```
-Executer le fichier dlFichiers.py présent dans le dossier ms_api_metier pour télécharger le fichier data utile et le convertir en csv. Un test vérifie la présence de fichiers générés.
-```
+Executer le fichier `dlFichiers.py` présent dans le dossier `ms_api_metier` pour télécharger le fichier data utile et le convertir en csv. Un test vérifie la présence de fichiers générés.
 
-## Traitement et chargement des données
-```
-Executer le fichier etl.py présent dans le dossier ms_api_metier pour traiter les données et les envoyer vers yellow_taxi.db présent dans ms_api_metier/data.
+
+### Traitement et chargement des données
+
+Executer le fichier `etl.py` présent dans le dossier `ms_api_metier` pour traiter les données et les envoyer vers yellow_taxi.db présent dans `ms_api_metier/data`.
 Traitement des incohérences : une course au dela de 320 miles sera supprimée, au dela de 7h également
 
-```
-## Composition de yellow_taxi.db
-```
-Base yellow_taxi.db (DuckDb) est composée de 2 tables, yellowtripdata comprenant toutes les courses et taxi_zones permettant de localiser les zones de prise en charge et de dépose des clients
-```
+### Composition de yellow_taxi.db
 
-## Entrainement modèle
+Base `yellow_taxi.db` (DuckDb) est composée de 2 tables, yellowtripdata comprenant toutes les courses et taxi_zones permettant de localiser les zones de prise en charge et de dépose des clients
+
+### Entrainement modèle
+
+**MAJ semaine 3** :
+
+Création du MLOPS
+
+Dans le dossier `ml` qui est dans `ms_api_metier` se trouve le fichier `run_mlops.py` qui executé les fichiers `train_ml_models.py` et `evaluation_model.py`.
+
+`run_mlops.py` va donc:
+- Lancer `train_ml_models.py`
+  - entrainer les modèles RandomForestRegressor et ExtraTreesRegressor
+  - tester les modèles avec le mae, rmse, r2
+  - les comparer avec un modèle naïf
+  - création d'un rapport `rapport_entrainement_modeles.json` dans un dossier `evaluation` qui est dans `data`
+  - Sauvegarde des modèles
+
+`rapport_entrainement_modeles.json` ressemble à ça :
+```JSON
+{"premier_modele": {"algorithme": "RandomForestRegressor", "nom_modele": "Random Forest", "version": "1.9.0", "date_entrainement": "2026-10-14T15:02:36.378461", "metriques": {"mae_minutes": 3.3911284922986034, "rmse_minutes": 5.256916446547886, "r2": 0.8256869533327006, "mae_naif_minutes": 9.012211366568096}}, "deuxieme_modele": {"algorithme": "ExtraTreesRegressor", "nom_modele": "Extra Trees", "date_entrainement": "2026-10-14T15:02:36.378700", "metriques": {"mae_minutes": 3.5544817108165643, "rmse_minutes": 5.3462480269986346, "r2": 0.8197123612294359, "mae_naif_minutes": 9.012211366568096}}}
 ```
-Executer le fichier train.py présent dans ms_api_metier pour lancer le ML en RandomForest (cela va prendre plusieurs minutes)
+- Lancer `evaluation_model.py`
+  - récupérer un nouvel échantillon de la data pour refaire les tests mae, rmse, r2
+  - création d'un nouveau rapport `evaluation.json` dans un dossier `evaluation` qui est dans `data`
+
+`evaluation.json` ressemble à ça :
+```JSON
+{"premier_modele": {"fichier_modele": "model_duree_premier.joblib", "algorithme": "RandomForestRegressor", "date_debut_donnees": "2026-07-28", "nb_trajets": 450818, "mae_minutes": 3.535, "date_evaluation": "2026-10-14T15:07:03.661994", "seuil_respecte": true, "seuil_minutes": 6.0}, "deuxieme_modele": {"fichier_modele": "model_duree_deuxieme.joblib", "algorithme": "ExtraTreesRegressor", "date_debut_donnees": "2026-07-28", "nb_trajets": 450818, "mae_minutes": 3.714, "date_evaluation": "2026-10-14T15:07:05.407618", "seuil_respecte": true, "seuil_minutes": 6.0}}
 ```
-## Prédictions
+Pour lancer le `run_mlops` depuis le terminal:
+```powershell
+python ms_api_metier/ml/run_mlops.py
+```
+Pour lancer le `run_mlops` sur vscode appuyer sur le bouton **run**
+
+### Prédictions
 ```
 Le fichier predict.py présent dans ms_api_metier permet d'obtenir des prédictions via la fonction predire_duree()
 
@@ -165,7 +192,7 @@ exemples["duree_predite_min"] = predire_duree(exemples)
 
 ```
 
-## Pour lancer les tests
+### Pour lancer les tests
 
 Depuis le repertoire ms_api_metier:
 
@@ -175,10 +202,11 @@ python -m pytest
 
 # CI/CD
 ## CI
+**MAJ semaine 3** : Nous avons mis les tests python en commentaire car il y a une erreur que nous n'arrivons pas à régler.
 
 ## CD
 Une vérification des images docker a été programmée à 11h et à 15h. A ces horaires, le script suivant est executé sur la machine virtuelle : 
-```
+```bash
     #!/bin/bash
 
     set -e
@@ -198,6 +226,22 @@ Une vérification des images docker a été programmée à 11h et à 15h. A ces 
 
     echo "=== Déploiement terminé ==="
 ```
+### CD MLOPS (MAJ S3)
+Sur la VM a été crée un fichier `mlops.hs` qui se lance grace à cron toutes les **15 minutes**:
+```bash
+#!/bin/bash
+
+set -e
+
+# Aller dans le dossier contenant docker-compose.yml
+cd /home/ubuntu/frenchcab
+
+# Lancer le pipeline dans le conteneur existant
+docker compose exec -T ms_api_metier python /app/ml/run_mlops.py
+
+echo "Pipeline MLOps terminé"
+```
+
 
 ## Base Transactionnelle 
 
