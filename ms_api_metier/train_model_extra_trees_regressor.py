@@ -437,7 +437,7 @@ def sauvegarde_modele_choisi(meilleur_model, meilleur_nom, X_train, mediane, df_
 # ============================================================
 # EXECUTION
 # ============================================================
-if __name__ == "__main__":
+def main_train():
 
 # Etape 1 : Définition des features
     df = extraction_donnees()
