@@ -1,0 +1,5 @@
+outs:
+- md5: 3640aad47c231610c7134a4b1fda9bb3
+  size: 389426564
+  hash: md5
+  path: yellow_tripdata_2026-07_propre.csv
