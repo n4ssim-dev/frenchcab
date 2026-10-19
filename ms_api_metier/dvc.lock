@@ -1,0 +1,101 @@
+schema: '2.0'
+stages:
+  etl:
+    cmd: python etl.py
+    deps:
+    - path: data/raw/taxi_zone_lookup.csv
+      hash: md5
+      md5: c6064b7c144c716450641f769659d178
+      size: 12331
+    - path: data/raw/yellow_tripdata_2026-07.csv
+      hash: md5
+      md5: b15725b0a405d7eca85a4c647eb315a0
+      size: 389749817
+    - path: etl.py
+      hash: md5
+      md5: 75eee532d0695f0a5af91253365506ce
+      size: 13503
+    outs:
+    - path: data/yellow_taxi.db
+      hash: md5
+      md5: 7b1f9de8312ea4f28bcc4e9d573b7a7a
+      size: 292302848
+    - path: data/yellow_tripdata_2026-07_propre.csv
+      hash: md5
+      md5: 3640aad47c231610c7134a4b1fda9bb3
+      size: 389426564
+  load:
+    cmd: python load.py
+    deps:
+    - path: data/raw/taxi_zone_lookup.csv
+      hash: md5
+      md5: c6064b7c144c716450641f769659d178
+      size: 12331
+    - path: data/yellow_tripdata_2026-07_propre.csv
+      hash: md5
+      md5: 3640aad47c231610c7134a4b1fda9bb3
+      size: 389426564
+    - path: load.py
+      hash: md5
+      md5: 6fb4d76e016d081649fe7a20d2bd81b9
+      size: 11146
+    outs:
+    - path: data/frenchcab.db
+      hash: md5
+      md5: 39e78cea3144b2fe4c406d6750442032
+      size: 520683520
+  train:
+    cmd: python ml/stage_train.py
+    deps:
+    - path: data/yellow_taxi.db
+      hash: md5
+      md5: 7b1f9de8312ea4f28bcc4e9d573b7a7a
+      size: 292302848
+    - path: ml/stage_train.py
+      hash: md5
+      md5: a15bd4541e6220c8ce6d39732073f563
+      size: 179
+    - path: ml/train_ml_models.py
+      hash: md5
+      md5: 9730bbfc83080acce716b57321023067
+      size: 16983
+    outs:
+    - path: data/comparaison_modeles_duree.png
+      hash: md5
+      md5: cf87bb06f05b7aaeb446687c988c6049
+      size: 19486
+    - path: data/models/model_duree_deuxieme.joblib
+      hash: md5
+      md5: 34b619cfd7d2fed2078bbcbc2128a015
+      size: 924987278
+    - path: data/models/model_duree_premier.joblib
+      hash: md5
+      md5: dab8ce66a39592b0ebd5596d74dd85b8
+      size: 1474136005
+  evaluate:
+    cmd: python ml/stage_evaluate.py
+    deps:
+    - path: data/models/model_duree_deuxieme.joblib
+      hash: md5
+      md5: 34b619cfd7d2fed2078bbcbc2128a015
+      size: 924987278
+    - path: data/models/model_duree_premier.joblib
+      hash: md5
+      md5: dab8ce66a39592b0ebd5596d74dd85b8
+      size: 1474136005
+    - path: data/yellow_taxi.db
+      hash: md5
+      md5: 7b1f9de8312ea4f28bcc4e9d573b7a7a
+      size: 292302848
+    - path: ml/evaluation_model.py
+      hash: md5
+      md5: c06535e6fb499459b50c1070e8d14a07
+      size: 5491
+    - path: ml/stage_evaluate.py
+      hash: md5
+      md5: 0c472b26b055b498df18f75530e1c89f
+      size: 330
+    params:
+      params.yaml:
+        evaluate.date_debut: '2026-07-28'
+        evaluate.seuil_mae_minutes: 6.0
