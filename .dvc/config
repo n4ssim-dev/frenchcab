@@ -1,4 +1,7 @@
 [core]
-    remote = storage
+    remote = vm
 ['remote "storage"']
     url = C:\dvc-storage
+['remote "vm"']
+    url = ssh://groupe3@20.19.124.235/home/groupe3/dvc-storage
+    ask_password = true
