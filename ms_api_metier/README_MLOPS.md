@@ -21,7 +21,7 @@ pip install -r requirements-ml.txt      # dvc + mlflow (inutiles pour l'API / Do
 Configurer le remote DVC partage (une seule fois, les identifiants restent en local) :
 
 ```bash
-dvc remote add -d -f storage ssh://groupe3@20.19.124.235/groupe3
+dvc remote add -d -f storage ssh://groupe3@xx.xx.xxx.xxx/groupe3
 dvc remote modify vm ask_password true
 dvc pull
 ```
