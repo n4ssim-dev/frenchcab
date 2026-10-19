@@ -147,6 +147,11 @@ Traitement des incohérences : une course au dela de 320 miles sera supprimée, 
 Base yellow_taxi.db (DuckDb) est composée de 2 tables, yellowtripdata comprenant toutes les courses et taxi_zones permettant de localiser les zones de prise en charge et de dépose des clients
 ```
 
+## Fichiers ML (ms_api_metier/ml)
+```
+Voir ms_api_metier/ml/README_ML.md
+```
+
 ## Entrainement modèle
 ```
 Executer le fichier train.py présent dans ms_api_metier pour lancer le ML en RandomForest (cela va prendre plusieurs minutes)
@@ -203,7 +208,10 @@ Une vérification des images docker a été programmée à 11h et à 15h. A ces 
 
 Depuis le repertoire ms_api_metier lancer pour creer la Base de données : \ms_api_metier\data\frenchcab.db
 
+`load.py` lit le fichier `data/yellow_tripdata_2026-07_propre.csv` produit par `etl.py` : il faut donc (re)lancer `etl.py` **avant** `load.py`, à chaque nouvelle donnée téléchargée.
+
 ```
+py etl.py
 py load.py 
 ```
 

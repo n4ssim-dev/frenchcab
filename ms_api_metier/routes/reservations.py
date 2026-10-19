@@ -139,6 +139,10 @@ def listerReservations(
     if statut is not None:
         conditions.append("r.statut_resa = ?")
         params.append(statut)
+    else:
+        # sans filtre de statut, les réservations annulées ne sont pas listées
+        conditions.append("r.statut_resa != ?")
+        params.append(ANNULEE)
     where = " WHERE " + " AND ".join(conditions) if conditions else ""
 
     conn = connexion()

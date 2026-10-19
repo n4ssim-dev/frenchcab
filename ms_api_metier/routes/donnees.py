@@ -65,17 +65,13 @@ def lancerEtl(
     with etl_lock:
         etl.CSV_PATH = csv_brut
         etl.OUTPUT_PATH = csv_propre
-        etl.dossier_sortie = dossier_rejets
+        etl.REJETS_DIR = dossier_rejets
         etl.REJETS_PATH = rejets
         etl.SQL_DB = base
-        etl.ZONES_PATH = zones
+        etl.ZONES_CSV = zones
 
         df = etl.nettoyage_csv(etl.lire_csv())
-        etl.creer_db(
-    db_path=DATA_DIR / "yellow_taxi.db",
-    zones_csv=RAW_DIR / "taxi_zone_lookup.csv",
-    trajets_csv=DATA_DIR / "yellow_tripdata_2026-07_propre.csv",   
-)
+        etl.creer_db(db_path=base, zones_csv=zones, trajets_csv=csv_propre)
 
     return {
         "mois": mois,
