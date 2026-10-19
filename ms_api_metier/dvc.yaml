@@ -21,6 +21,7 @@ stages:
   train:
     cmd: python ml/stage_train.py
     deps:
+      - ml/mlflow_utils.py
       - ml/stage_train.py
       - ml/train_ml_models.py
       - data/yellow_taxi.db
@@ -32,6 +33,7 @@ stages:
   evaluate:
     cmd: python ml/stage_evaluate.py
     deps:
+      - ml/mlflow_utils.py
       - ml/stage_evaluate.py
       - ml/evaluation_model.py
       - data/yellow_taxi.db

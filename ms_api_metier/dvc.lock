@@ -51,10 +51,14 @@ stages:
       hash: md5
       md5: 7b1f9de8312ea4f28bcc4e9d573b7a7a
       size: 292302848
+    - path: ml/mlflow_utils.py
+      hash: md5
+      md5: 25d14d29e1cb96e4344f2f87aab21098
+      size: 1454
     - path: ml/stage_train.py
       hash: md5
-      md5: a15bd4541e6220c8ce6d39732073f563
-      size: 179
+      md5: cfa2906fdf2270309a148c2651d4ed6f
+      size: 1502
     - path: ml/train_ml_models.py
       hash: md5
       md5: 9730bbfc83080acce716b57321023067
@@ -62,27 +66,27 @@ stages:
     outs:
     - path: data/comparaison_modeles_duree.png
       hash: md5
-      md5: cf87bb06f05b7aaeb446687c988c6049
-      size: 19486
+      md5: 66fd45b95a4742f04e6a72dd81123904
+      size: 19476
     - path: data/models/model_duree_deuxieme.joblib
       hash: md5
-      md5: 34b619cfd7d2fed2078bbcbc2128a015
-      size: 924987278
+      md5: 74c7c5eab1cbdd6ad07ff5b1a54a48a4
+      size: 936157934
     - path: data/models/model_duree_premier.joblib
       hash: md5
-      md5: dab8ce66a39592b0ebd5596d74dd85b8
-      size: 1474136005
+      md5: 4b98f6a8d1f47b58df88f60208100920
+      size: 1476104341
   evaluate:
     cmd: python ml/stage_evaluate.py
     deps:
     - path: data/models/model_duree_deuxieme.joblib
       hash: md5
-      md5: 34b619cfd7d2fed2078bbcbc2128a015
-      size: 924987278
+      md5: 74c7c5eab1cbdd6ad07ff5b1a54a48a4
+      size: 936157934
     - path: data/models/model_duree_premier.joblib
       hash: md5
-      md5: dab8ce66a39592b0ebd5596d74dd85b8
-      size: 1474136005
+      md5: 4b98f6a8d1f47b58df88f60208100920
+      size: 1476104341
     - path: data/yellow_taxi.db
       hash: md5
       md5: 7b1f9de8312ea4f28bcc4e9d573b7a7a
@@ -91,10 +95,14 @@ stages:
       hash: md5
       md5: c06535e6fb499459b50c1070e8d14a07
       size: 5491
+    - path: ml/mlflow_utils.py
+      hash: md5
+      md5: 25d14d29e1cb96e4344f2f87aab21098
+      size: 1454
     - path: ml/stage_evaluate.py
       hash: md5
-      md5: 0c472b26b055b498df18f75530e1c89f
-      size: 330
+      md5: bbb1037951fc3bbbdc7440b31efd99bf
+      size: 1126
     params:
       params.yaml:
         evaluate.date_debut: '2026-07-28'

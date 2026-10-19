@@ -10,3 +10,5 @@ ms_api_metier/data/Matrices_correlation/
 ms_api_metier/data/evaluation/
 ms_api_metier/data/lignes_rejetees/
 ms_api_metier/data/*.png
+ms_api_metier/mlflow.db
+ms_api_metier/mlruns/
