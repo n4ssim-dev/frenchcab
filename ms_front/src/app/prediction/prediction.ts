@@ -1,8 +1,8 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { CoursesService } from '../courses.service';
+import { CoursesService, InfoModele } from '../courses.service';
 import { ZoneSelect } from '../zone-select/zone-select';
 import { nomZone } from '../zones';
 
@@ -12,7 +12,7 @@ import { nomZone } from '../zones';
   templateUrl: './prediction.html',
   styleUrl: './prediction.scss',
 })
-export class Prediction {
+export class Prediction implements OnInit {
   private service = inject(CoursesService);
 
   pickup = signal('2026-07-15T18:10');
@@ -24,6 +24,21 @@ export class Prediction {
   erreur = signal<string | null>(null);
   chargement = signal(false);
   soumis = signal(false);
+
+  /** Modèle de prédiction utilisé par l'API (nom et version). */
+  modele = signal<InfoModele | null>(null);
+  modeleChargement = signal(true);
+
+  ngOnInit() {
+    // le premier appel peut être long : le serveur charge alors le modèle en mémoire
+    this.service.getModele().subscribe({
+      next: (m) => {
+        this.modele.set(m);
+        this.modeleChargement.set(false);
+      },
+      error: () => this.modeleChargement.set(false),
+    });
+  }
 
   valide = computed(
     () =>

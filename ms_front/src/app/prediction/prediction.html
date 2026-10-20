@@ -3,6 +3,20 @@
     <div>
       <h1>Estimer un trajet</h1>
       <p>Obtenez la durée prédite par notre modèle, sans réserver.</p>
+      @if (modele(); as m) {
+        <p class="discret modele">
+          Modèle utilisé : <strong>{{ m.nom_modele }}</strong> · version
+          <code [title]="'Empreinte MD5 : ' + m.empreinte_md5">{{ m.version }}</code>
+          · mis à jour le {{ m.date_fichier | date: 'dd/MM/yyyy' }}
+          @if (m.metriques.mae_minutes !== undefined) {
+            · erreur moyenne {{ m.metriques.mae_minutes | number: '1.1-1' }} min
+          }
+        </p>
+      } @else if (modeleChargement()) {
+        <p class="discret modele">Modèle utilisé : chargement…</p>
+      } @else {
+        <p class="discret modele">Modèle utilisé : information indisponible</p>
+      }
     </div>
   </div>
 

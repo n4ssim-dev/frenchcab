@@ -68,11 +68,16 @@ function updateReservation(uid_reservation, statut) {
 
 
 
+function getModele() {
+  return requeter("/modele/info");
+}
+
 module.exports = {
   getCourses,
   getCourse,
   predireDuree,
   reservation,
   listeReservations,
-  updateReservation
+  updateReservation,
+  getModele
 };

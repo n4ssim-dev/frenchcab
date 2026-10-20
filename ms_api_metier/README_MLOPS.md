@@ -117,13 +117,22 @@ dvc push -r vm
 git push
 ```
 
-Relever les empreintes dans `ms_api_metier/dvc.lock` (lignes `md5:` sous
-`data/models/model_duree_premier.joblib` et, si besoin, `data/yellow_taxi.db`), puis sur la VM :
+Relever l'empreinte `md5:` de `data/models/model_duree_premier.joblib` dans `ms_api_metier/dvc.lock`, puis sur la VM :
 
 ```bash
-./deploy_modele.sh <md5_modele> [<md5_yellow_taxi_db>]
+./choisir_modele.sh                      # affiche les versions et propose de choisir (o/N pour confirmer)
+./choisir_modele.sh liste                # affiche seulement
+./choisir_modele.sh activer <n|md5>      # bascule sans menu (retour arriere automatique si l'API ne sert pas la bonne version)
+./choisir_modele.sh installer <md5_modele> [<md5_db>] [libelle]   # copie une nouvelle version depuis ~/dvc-storage
 ```
 
-Le script copie le fichier depuis `~/dvc-storage/files/md5/..` (sans installer DVC),
-verifie l'empreinte, garde l'ancien fichier en `.prev` et redemarre l'API.
-Le script se copie sur la VM avec : `scp scripts/deploy_modele.sh groupe3@<IP>:~/frenchcab/deploy_modele.sh`.
+Principe : les versions sont rangees dans `api_data/models/versions/` (2 gardees + la version active),
+et `model_duree_premier.joblib` devient un lien symbolique vers la version choisie.
+Au premier lancement, le fichier existant et son `.prev` sont migres automatiquement.
+Apres chaque bascule, le script redemarre `ms_api_metier` et verifie via `/modele/info`
+que la version servie (md5 sur 8 caracteres) est la bonne : c'est la meme version que sur la page Angular.
+Prevoir ~1,4 Go d'espace disque par version.
+
+Copie sur la VM (sans installer DVC) :
+`scp scripts/choisir_modele.sh scripts/deploy_modele.sh groupe3@<IP>:~/frenchcab/`
+puis `sed -i 's/\r$//' *.sh && chmod +x *.sh`.
