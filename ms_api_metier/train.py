@@ -119,7 +119,7 @@ print("-" * 40)
 rf = RandomForestRegressor(
     n_estimators=100,
     max_depth=20,
-    min_samples_leaf=5,
+    min_samples_leaf=3,
     n_jobs=-1,
     random_state=42,
 )

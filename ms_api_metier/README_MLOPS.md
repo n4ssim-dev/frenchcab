@@ -100,28 +100,30 @@ dvc checkout        # remet les donnees correspondantes
 | `dvc add` refuse un fichier | Il est ignore par `.gitignore` : retirer la regle correspondante |
 | `ERROR: ... already exists` sur un remote | Utiliser `-f` : `dvc remote add -d -f ...` |
 
-## 9. Deployer un modele (VM et PC)
+## 9. Deployer un modele sur la VM
 
-Le modele servi par l'API est `data/models/model_duree_premier.joblib`, celui du commit Git courant.
-Le registre MLflow sert a comparer et nommer les versions, il ne deploie rien.
+Sur la VM, l'API tourne depuis une image Docker Hub (construite par la CI depuis `main`)
+et lit ses donnees dans `~/frenchcab/api_data` (monte en volume sur `/app/data`).
+Un cron lance `deploy.sh` (docker compose pull + up) a 11h, 15h et 15h20.
 
-Sur la machine qui entraine :
+Deux choses sont donc independantes :
+- le **code** (`predict.py`) : change avec l'image, apres un merge sur `main` ;
+- le **modele** (fichier `.joblib`) : se place dans `api_data/models/`.
 
-```bash
-dvc repro
-python ml/promote_if_better.py          # decide si le modele bat le champion
-git add ms_api_metier/dvc.lock && git commit -m "Nouveau modele"   # seulement si PROMOUVOIR
-dvc push && git push
+Depuis le PC, apres `dvc repro`, la decision de `promote_if_better.py` et le commit :
+
+```powershell
+dvc push -r vm
+git push
 ```
 
-Si la decision est "ne pas promouvoir" : `git checkout -- ms_api_metier/dvc.lock && dvc checkout`.
-
-Sur la VM (et sur chaque PC qui fait tourner l'API) :
+Relever les empreintes dans `ms_api_metier/dvc.lock` (lignes `md5:` sous
+`data/models/model_duree_premier.joblib` et, si besoin, `data/yellow_taxi.db`), puis sur la VM :
 
 ```bash
-./scripts/deploy_modele.sh
+./deploy_modele.sh <md5_modele> [<md5_yellow_taxi_db>]
 ```
 
-Le script fait `git pull`, `dvc pull`, verifie que l'empreinte du fichier correspond a `dvc.lock`, redemarre l'API et attend qu'elle reponde.
-Sur la VM, ajouter un remote local evite le mot de passe SSH :
-`dvc remote add --local vm-local /chemin/reel/dvc-storage` puis `DVC_REMOTE=vm-local ./scripts/deploy_modele.sh`.
+Le script copie le fichier depuis `~/dvc-storage/files/md5/..` (sans installer DVC),
+verifie l'empreinte, garde l'ancien fichier en `.prev` et redemarre l'API.
+Le script se copie sur la VM avec : `scp scripts/deploy_modele.sh groupe3@<IP>:~/frenchcab/deploy_modele.sh`.

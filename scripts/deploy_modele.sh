@@ -1,79 +1,84 @@
 #!/usr/bin/env bash
-# Deploie le modele du commit courant : git pull, dvc pull, verification
-# de l'empreinte, redemarrage de l'API et controle de sante.
+# A LANCER SUR LA VM. Installe dans api_data/ le modele (et optionnellement la
+# base) d'un commit donne, depuis le remote DVC local (~/dvc-storage), puis
+# redemarre l'API. Aucune installation de DVC n'est necessaire sur la VM.
 #
-# Usage (depuis n'importe ou dans le depot) :
-#   ./scripts/deploy_modele.sh                # branche courante
-#   ./scripts/deploy_modele.sh dev            # bascule sur la branche dev
+# Usage :
+#   ./deploy_modele.sh <md5_modele> [<md5_yellow_taxi_db>]
 #
-# Variable optionnelle :
-#   DVC_REMOTE=vm-local ./scripts/deploy_modele.sh
-#     (utile sur la VM : remote local au lieu de passer par SSH)
+# Les md5 se lisent dans ms_api_metier/dvc.lock du commit a deployer :
+#   - modele : ligne "md5:" sous  path: data/models/model_duree_premier.joblib
+#   - base   : ligne "md5:" sous  path: data/yellow_taxi.db  (stage etl)
 set -euo pipefail
 
-BRANCHE="${1:-}"
-RACINE="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$RACINE"
+MD5_MODELE="${1:-}"
+MD5_BASE="${2:-}"
+STOCKAGE="${DVC_STORAGE:-$HOME/dvc-storage}"
+PROJET="${FRENCHCAB_DIR:-$HOME/frenchcab}"
+DATA="$PROJET/api_data"
 
-MODELE="ms_api_metier/data/models/model_duree_premier.joblib"
-SERVICE="ms_api_metier"
-URL_SANTE="http://localhost:8000/docs"
-
-echo "==> 1/5 Etat du depot"
-if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
-  echo "ERREUR : modifications locales non commitees, abandon." >&2
-  git status --short --untracked-files=no >&2
+valide_md5() { [[ "$1" =~ ^[0-9a-f]{32}$ ]]; }
+if ! valide_md5 "$MD5_MODELE"; then
+  echo "Usage : $0 <md5_modele> [<md5_yellow_taxi_db>]" >&2
+  exit 1
+fi
+if [ -n "$MD5_BASE" ] && ! valide_md5 "$MD5_BASE"; then
+  echo "md5 de la base invalide" >&2
   exit 1
 fi
 
-echo "==> 2/5 git pull"
-if [ -n "$BRANCHE" ]; then
-  git fetch origin
-  git checkout "$BRANCHE"
-fi
-git pull --ff-only
-echo "Commit courant : $(git rev-parse --short HEAD) ($(git rev-parse --abbrev-ref HEAD))"
+installer() {
+  local md5="$1" cible="$2"
+  local source="$STOCKAGE/files/md5/${md5:0:2}/${md5:2}"
+  if [ ! -f "$source" ]; then
+    echo "ERREUR : introuvable dans le remote DVC : $source" >&2
+    echo "         (dvc push -r vm fait depuis le PC ?)" >&2
+    exit 1
+  fi
+  local taille dispo reel
+  taille=$(stat -c %s "$source")
+  dispo=$(df --output=avail -B1 "$(dirname "$cible")" | tail -1 | tr -d ' ')
+  if [ "$dispo" -lt $((taille + 500000000)) ]; then
+    echo "ERREUR : espace disque insuffisant pour $(basename "$cible")" >&2
+    exit 1
+  fi
+  echo "Copie de $(basename "$cible") ($((taille / 1048576)) Mo)..."
+  cp "$source" "$cible.tmp"
+  reel=$(md5sum "$cible.tmp" | awk '{print $1}')
+  if [ "$reel" != "$md5" ]; then
+    rm -f "$cible.tmp"
+    echo "ERREUR : empreinte incorrecte (attendu $md5, obtenu $reel)" >&2
+    exit 1
+  fi
+  if [ -f "$cible" ]; then mv -f "$cible" "$cible.prev"; fi
+  mv -f "$cible.tmp" "$cible"
+  echo "Installe : $cible (md5 $md5)"
+}
 
-echo "==> 3/5 dvc pull (un mot de passe SSH peut etre demande)"
-if [ -n "${DVC_REMOTE:-}" ]; then
-  dvc pull -r "$DVC_REMOTE"
-else
-  dvc pull
+installer "$MD5_MODELE" "$DATA/models/model_duree_premier.joblib"
+if [ -n "$MD5_BASE" ]; then
+  installer "$MD5_BASE" "$DATA/yellow_taxi.db"
 fi
 
-echo "==> 4/5 Verification de l'empreinte du modele"
-attendu="$(grep -A3 "path: data/models/model_duree_premier.joblib" ms_api_metier/dvc.lock \
-  | grep -m1 'md5:' | awk '{print $2}' || true)"
-if [ -z "$attendu" ]; then
-  echo "ERREUR : empreinte du modele introuvable dans dvc.lock." >&2
-  exit 1
-fi
-if [ ! -f "$MODELE" ]; then
-  echo "ERREUR : $MODELE absent apres dvc pull." >&2
-  exit 1
-fi
-reel="$(md5sum "$MODELE" | awk '{print $1}')"
-if [ "$attendu" != "$reel" ]; then
-  echo "ERREUR : le fichier ne correspond pas au commit." >&2
-  echo "  attendu (dvc.lock) : $attendu" >&2
-  echo "  reel (fichier)     : $reel" >&2
-  exit 1
-fi
-echo "Empreinte OK : $reel"
+cd "$PROJET"
+echo "--- Fichier de modele attendu par l'image de l'API :"
+docker compose exec -T ms_api_metier grep -n "MODEL_PATH =" /app/predict.py || true
 
-echo "==> 5/5 Redemarrage de l'API"
-docker compose restart "$SERVICE"
-echo -n "Attente de l'API (le chargement du modele peut prendre une minute) "
+echo "--- Redemarrage de l'API"
+docker compose restart ms_api_metier
+echo -n "Attente de l'API (chargement du modele : jusqu'a 2 minutes) "
 for _ in $(seq 1 30); do
-  if curl -fsS -o /dev/null "$URL_SANTE"; then
+  if curl -fsS -o /dev/null http://localhost:8000/docs; then
     echo
-    echo "API OK : $URL_SANTE"
-    echo "Modele en service : $(basename "$MODELE") md5=$reel"
+    echo "API OK. Modele installe : model_duree_premier.joblib md5=$MD5_MODELE"
+    echo "Si la ligne MODEL_PATH ci-dessus ne cite pas model_duree_premier.joblib,"
+    echo "l'image de l'API n'utilise pas encore ce fichier (voir README, section 9)."
     exit 0
   fi
   echo -n "."
   sleep 4
 done
 echo
-echo "ERREUR : l'API ne repond pas apres 2 minutes. Voir : docker compose logs $SERVICE" >&2
+echo "ERREUR : l'API ne repond pas. Voir : docker compose logs ms_api_metier" >&2
+echo "Retour arriere : mv $DATA/models/model_duree_premier.joblib.prev $DATA/models/model_duree_premier.joblib" >&2
 exit 1
