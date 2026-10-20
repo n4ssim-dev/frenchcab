@@ -64,8 +64,7 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      # Pas encore de tests : on vérifie au moins la syntaxe de chaque fichier
-      - run: find . -name "*.js" -not -path "./node_modules/*" -print0 | xargs -0 -n1 node --check
+      - run: npm test
 
   ms_front:
     needs: changements

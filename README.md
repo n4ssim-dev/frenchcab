@@ -168,9 +168,12 @@ Dans le dossier `ml` qui est dans `ms_api_metier` se trouve le fichier `run_mlop
   - récupérer un nouvel échantillon de la data pour refaire les tests mae, rmse, r2
   - création d'un nouveau rapport `evaluation.json` dans un dossier `evaluation` qui est dans `data`
 
-`evaluation.json` ressemble à ça :
-```JSON
-{"premier_modele": {"fichier_modele": "model_duree_premier.joblib", "algorithme": "RandomForestRegressor", "date_debut_donnees": "2026-07-28", "nb_trajets": 450818, "mae_minutes": 3.535, "date_evaluation": "2026-10-14T15:07:03.661994", "seuil_respecte": true, "seuil_minutes": 6.0}, "deuxieme_modele": {"fichier_modele": "model_duree_deuxieme.joblib", "algorithme": "ExtraTreesRegressor", "date_debut_donnees": "2026-07-28", "nb_trajets": 450818, "mae_minutes": 3.714, "date_evaluation": "2026-10-14T15:07:05.407618", "seuil_respecte": true, "seuil_minutes": 6.0}}
+## Fichiers ML (ms_api_metier/ml)
+```
+Voir ms_api_metier/ml/README_ML.md
+```
+
+## Entrainement modèle
 ```
 Pour lancer le `run_mlops` depuis le terminal:
 ```powershell
@@ -247,7 +250,10 @@ echo "Pipeline MLOps terminé"
 
 Depuis le repertoire ms_api_metier lancer pour creer la Base de données : \ms_api_metier\data\frenchcab.db
 
+`load.py` lit le fichier `data/yellow_tripdata_2026-07_propre.csv` produit par `etl.py` : il faut donc (re)lancer `etl.py` **avant** `load.py`, à chaque nouvelle donnée téléchargée.
+
 ```
+py etl.py
 py load.py 
 ```
 
