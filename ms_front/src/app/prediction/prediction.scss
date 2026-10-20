@@ -31,3 +31,13 @@
     font-size: 1.5rem;
   }
 }
+
+.modele {
+  margin-top: 4px;
+
+  code {
+    background: var(--gris-50);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+}

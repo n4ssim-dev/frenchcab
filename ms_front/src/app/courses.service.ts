@@ -45,6 +45,17 @@ export interface ResultatPrediction {
   duree_predite_min: number;
 }
 
+export interface InfoModele {
+  nom_modele: string;
+  algorithme: string;
+  version: string;
+  empreinte_md5: string;
+  fichier: string;
+  date_fichier: string;
+  nombre_variables: number;
+  metriques: { mae_minutes?: number; rmse_minutes?: number; r2?: number };
+}
+
 @Injectable({ providedIn: 'root' })
 export class CoursesService {
   private http = inject(HttpClient);
@@ -66,6 +77,14 @@ export class CoursesService {
   predireDuree(demande: DemandePrediction): Observable<ResultatPrediction> {
     return this.http
       .post<{ reponse: ResultatPrediction }>(`${GATEWAY_URL}/predictions/duree`, demande, {
+        headers: { 'x-api-password': GATEWAY_PASSWORD },
+      })
+      .pipe(map((r) => r.reponse));
+  }
+
+  getModele(): Observable<InfoModele> {
+    return this.http
+      .get<{ reponse: InfoModele }>(`${GATEWAY_URL}/modele`, {
         headers: { 'x-api-password': GATEWAY_PASSWORD },
       })
       .pipe(map((r) => r.reponse));
