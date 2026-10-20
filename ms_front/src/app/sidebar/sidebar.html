@@ -1,13 +1,19 @@
-<aside class="sidebar" [class.reduite]="!ouvert">
-  <button class="toggle" (click)="basculer()">
-    {{ ouvert ? '«' : '»' }}
+<header class="barre">
+  <a class="logo" routerLink="/accueil" (click)="fermer()">FrenchCab</a>
+
+  <button
+    class="burger"
+    type="button"
+    [attr.aria-expanded]="ouvert"
+    aria-label="Menu"
+    (click)="basculer()"
+  >
+    <span></span><span></span><span></span>
   </button>
 
-  <nav>
+  <nav [class.ouvert]="ouvert">
     @for (lien of liens; track lien.chemin) {
-      <a [routerLink]="lien.chemin" routerLinkActive="actif">
-        {{ ouvert ? lien.label : lien.label[0] }}
-      </a>
+      <a [routerLink]="lien.chemin" routerLinkActive="actif" (click)="fermer()">{{ lien.label }}</a>
     }
   </nav>
-</aside>
+</header>

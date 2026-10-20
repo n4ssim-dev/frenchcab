@@ -1,10 +1,14 @@
-import { Component, inject, signal } from '@angular/core';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { CoursesService } from '../courses.service';
+import { ZoneSelect } from '../zone-select/zone-select';
+import { nomZone } from '../zones';
 
 @Component({
   selector: 'app-prediction',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink, DatePipe, DecimalPipe, ZoneSelect],
   templateUrl: './prediction.html',
   styleUrl: './prediction.scss',
 })
@@ -19,13 +23,35 @@ export class Prediction {
   resultat = signal<number | null>(null);
   erreur = signal<string | null>(null);
   chargement = signal(false);
+  soumis = signal(false);
+
+  valide = computed(
+    () =>
+      !!this.pickup() &&
+      this.depart() !== null &&
+      this.arrivee() !== null &&
+      (this.distance() ?? 0) > 0,
+  );
+
+  /** Heure d'arrivée estimée, affichée sous la durée. */
+  arriveeEstimee = computed(() => {
+    const minutes = this.resultat();
+    if (minutes === null || !this.pickup()) return null;
+    return new Date(new Date(this.pickup()).getTime() + minutes * 60000);
+  });
+
+  /** Paramètres pour pré-remplir le formulaire de réservation. */
+  paramsReservation = computed(() => ({
+    depart: this.depart(),
+    arrivee: this.arrivee(),
+    duree: this.resultat() === null ? null : Math.ceil(this.resultat()!),
+  }));
+
+  readonly nomZone = nomZone;
 
   predire() {
-    const depart = this.depart();
-    const arrivee = this.arrivee();
-    const distance = this.distance();
-
-    if (!this.pickup() || depart === null || arrivee === null || distance === null) {
+    this.soumis.set(true);
+    if (!this.valide()) {
       this.erreur.set('Remplis tous les champs.');
       return;
     }
@@ -37,9 +63,9 @@ export class Prediction {
     this.service
       .predireDuree({
         pickup: this.pickup(),
-        id_location_depart: depart,
-        id_location_arrivee: arrivee,
-        distance,
+        id_location_depart: this.depart()!,
+        id_location_arrivee: this.arrivee()!,
+        distance: this.distance()!,
       })
       .subscribe({
         next: (r) => {

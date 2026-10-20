@@ -1,0 +1,16 @@
+<div class="pagination">
+  <label class="taille">
+    <span class="discret">Lignes</span>
+    <select #choix [value]="taille()" (change)="changerTaille(choix.value)">
+      @for (t of tailles; track t) {
+        <option [value]="t">{{ t }}</option>
+      }
+    </select>
+  </label>
+
+  <div class="pages">
+    <button class="btn secondaire petit" type="button" (click)="precedent()" [disabled]="page() === 0 || desactive()" aria-label="Page précédente">←</button>
+    <span>{{ page() + 1 | number }} / {{ nbPages() | number }}</span>
+    <button class="btn secondaire petit" type="button" (click)="suivant()" [disabled]="page() >= nbPages() - 1 || desactive()" aria-label="Page suivante">→</button>
+  </div>
+</div>

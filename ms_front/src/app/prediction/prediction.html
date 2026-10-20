@@ -1,37 +1,51 @@
-<h1>Prédiction de durée</h1>
+<div class="page">
+  <div class="page-entete">
+    <div>
+      <h1>Estimer un trajet</h1>
+      <p>Obtenez la durée prédite par notre modèle, sans réserver.</p>
+    </div>
+  </div>
 
-<form (ngSubmit)="predire()">
-  <label>
-    Départ (date et heure)
-    <input type="datetime-local" name="pickup" [(ngModel)]="pickup" />
-  </label>
+  <div class="grille-2">
+    <form class="carte formulaire" (ngSubmit)="predire()" novalidate>
+      <div class="trajet">
+        <app-zone-select label="Départ" nom="depart" [(valeur)]="depart" [invalide]="soumis() && depart() === null" />
+        <app-zone-select label="Arrivée" nom="arrivee" [(valeur)]="arrivee" [invalide]="soumis() && arrivee() === null" />
+      </div>
 
-  <label>
-    Zone de départ (id)
-    <input type="number" name="depart" min="1" [(ngModel)]="depart" />
-  </label>
+      <div class="ligne-champs">
+        <label class="champ">
+          <span>Date et heure de départ</span>
+          <input type="datetime-local" name="pickup" [(ngModel)]="pickup" [class.invalide]="soumis() && !pickup()" />
+        </label>
 
-  <label>
-    Zone d'arrivée (id)
-    <input type="number" name="arrivee" min="1" [(ngModel)]="arrivee" />
-  </label>
+        <label class="champ">
+          <span>Distance (miles)</span>
+          <input type="number" name="distance" min="0.1" step="0.1" [(ngModel)]="distance" [class.invalide]="soumis() && !(distance()! > 0)" />
+        </label>
+      </div>
 
-  <label>
-    Distance (miles)
-    <input type="number" name="distance" min="0.1" step="0.1" [(ngModel)]="distance" />
-  </label>
+      @if (erreur()) {
+        <p class="alerte erreur">{{ erreur() }}</p>
+      }
 
-  <button type="submit" [disabled]="chargement()">Prédire</button>
-</form>
+      <button class="btn large" type="submit" [disabled]="chargement()">
+        {{ chargement() ? 'Calcul en cours…' : 'Estimer la durée' }}
+      </button>
+    </form>
 
-@if (chargement()) {
-  <p>Calcul en cours…</p>
-}
-
-@if (erreur()) {
-  <p class="erreur">{{ erreur() }}</p>
-}
-
-@if (resultat() !== null) {
-  <p class="resultat">Durée estimée : <strong>{{ resultat() }} min</strong></p>
-}
+    <aside class="carte resultat" [class.vide-resultat]="resultat() === null">
+      @if (resultat() !== null) {
+        <span class="discret">Durée estimée</span>
+        <p class="duree">{{ resultat() | number: '1.0-0' }} <small>min</small></p>
+        <p class="discret">
+          {{ nomZone(depart()) }} → {{ nomZone(arrivee()) }}<br />
+          Arrivée vers {{ arriveeEstimee() | date: 'HH:mm' }}
+        </p>
+        <a class="btn large" routerLink="/nouvelle-reservation" [queryParams]="paramsReservation()">Réserver ce trajet</a>
+      } @else {
+        <p class="discret">Le résultat de l'estimation s'affichera ici.</p>
+      }
+    </aside>
+  </div>
+</div>

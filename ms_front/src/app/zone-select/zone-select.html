@@ -1,0 +1,13 @@
+<label class="champ">
+  <span>{{ label() }}</span>
+  <select [name]="nom()" [class.invalide]="invalide()" #choix (change)="choisir(choix.value)">
+    <option value="" [selected]="valeur() === null" disabled>Choisir une zone…</option>
+    @for (g of groupes; track g.quartier) {
+      <optgroup [label]="g.quartier">
+        @for (z of g.zones; track z.id) {
+          <option [value]="z.id" [selected]="z.id === valeur()">{{ z.zone }}</option>
+        }
+      </optgroup>
+    }
+  </select>
+</label>

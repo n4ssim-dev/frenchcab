@@ -9,17 +9,21 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './sidebar.scss'
 })
 export class Sidebar {
-  ouvert = true;
+  // menu déroulant sur mobile
+  ouvert = false;
 
-liens = [
-  { label: 'Accueil', chemin: '/accueil' },
-  { label: 'Recherche de course', chemin: '/recherche-course' },
-  { label: 'Liste des courses', chemin: '/liste-courses' },
-  { label: 'Prédiction de durée', chemin: '/prediction' },
-  { label: 'Réservation', chemin: '/liste-reservations' }
-];
+  liens = [
+    { label: 'Réserver', chemin: '/nouvelle-reservation' },
+    { label: 'Estimer un trajet', chemin: '/prediction' },
+    { label: 'Réservations', chemin: '/liste-reservations' },
+    { label: 'Historique des courses', chemin: '/liste-courses' },
+  ];
 
   basculer() {
     this.ouvert = !this.ouvert;
+  }
+
+  fermer() {
+    this.ouvert = false;
   }
 }

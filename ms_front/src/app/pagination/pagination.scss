@@ -1,0 +1,27 @@
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 0.9rem;
+}
+
+.taille {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  select {
+    width: 84px;
+    height: 36px;
+  }
+}
+
+.pages {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-variant-numeric: tabular-nums;
+}
