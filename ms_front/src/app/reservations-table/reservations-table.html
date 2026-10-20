@@ -1,64 +1,77 @@
-@if (erreur()) {
-  <p class="erreur">{{ erreur() }}</p>
-} @else {
-  <p class="resume">
-    {{ total() | number }} Réservation(s)
-    @if (date()) {
-      le {{ date() | date: 'dd/MM/yy' }}
-    }
-    @if (chargement()) {
-      <span class="chargement"> — chargement… </span>
-    }
-  </p>
-
-  @if (reservations().length > 0) {  
-    <div class="conteneur">
-      <table>
-        <thead>
-          <tr>
-          
-            <th>Date</th>
-            <th>Heure</th>
-            <th>Statut</th>
-            <th>Zone de départ</th>
-            <th>Zone d'arrivée</th>
-            <th>Nom Client</th>
-            <th>Email Client</th>
-            <th> Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (c of reservations(); track c.uid_reservation) {
-            <tr>
-              <!-- <td>{{ c.uid_reservation}}</td> -->
-              <td>{{ c.resa_date | date: 'dd/MM/yy HH:mm' }}</td>
-              <td>{{ c.resa_heure }} </td>
-              <td>{{ c.statut_nom  }} </td>
-              <td>{{ c.zone_depart }}</td>
-              <td>{{ c.zone_arrivee  }}</td>
-              <td class="num">{{ c.client_nom  }}</td>
-              <td class="num">{{ c.client_email }} </td>
-    <td class="num">
-      <button
-        type="button"
-        class="btn-annuler"
-        [disabled]="c.statut_resa !== 0"
-        (click)="changerStatut(c.uid_reservation,'3')">
-        Annuler
+<div class="barre-outils">
+  <div class="chips" role="group" aria-label="Filtrer par statut">
+    @for (f of filtres; track f.label) {
+      <button class="chip" type="button" [class.actif]="filtre() === f.statut" (click)="filtre.set(f.statut)">
+        {{ f.label }} · {{ nombre(f.statut) }}
       </button>
-    </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <div class="pagination">
-      <button (click)="precedent()" [disabled]="page() === 0 || chargement()">← Précédent</button>
-      <span>Page {{ page() + 1 | number }} / {{ nbPages() | number }}</span>
-      <button (click)="suivant()" [disabled]="page() >= nbPages() - 1 || chargement()">Suivant →</button>
-    </div>
-  } @else if (!chargement()) {
-    <p>Aucune Réservation trouvée.</p>
+    }
+  </div>
+  @if (chargement()) {
+    <span class="discret">Chargement…</span>
   }
+</div>
+
+@if (message(); as m) {
+  <p class="alerte" [class.succes]="m.type === 'succes'" [class.erreur]="m.type === 'erreur'">{{ m.texte }}</p>
+}
+
+@if (erreur()) {
+  <p class="alerte erreur">{{ erreur() }}</p>
+} @else if (visibles().length > 0) {
+  <div class="tableau">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Trajet</th>
+          <th>Client</th>
+          <th class="num">Durée</th>
+          <th>Statut</th>
+          <th class="num">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of visibles(); track r.uid_reservation) {
+          <tr>
+            <td>
+              {{ r.resa_date | date: 'dd/MM/yyyy' }}
+              <small>{{ r.resa_heure.slice(0, 5) }}</small>
+            </td>
+            <td class="tronque">
+              <strong>{{ r.zone_depart ?? '—' }}</strong>
+              <small>→ {{ r.zone_arrivee ?? '—' }}</small>
+            </td>
+            <td class="tronque">
+              {{ r.client_nom ?? '—' }}
+              <small>{{ r.client_email }}</small>
+            </td>
+            <td class="num">
+              @if (r.estimation_duree_course !== null) {
+                {{ r.estimation_duree_course | number: '1.0-0' }} min
+              } @else {
+                —
+              }
+            </td>
+            <td><span class="badge" [class]="classeStatut(r.statut_resa)">{{ r.statut_nom }}</span></td>
+            <td class="num">
+              @if (aConfirmer() === r.uid_reservation) {
+                <span class="confirmer">
+                  <button class="btn danger petit" type="button" [disabled]="enCours() !== null" (click)="annuler(r.uid_reservation)">
+                    {{ enCours() === r.uid_reservation ? '…' : "Oui, annuler" }}
+                  </button>
+                  <button class="btn secondaire petit" type="button" [disabled]="enCours() !== null" (click)="aConfirmer.set(null)">Non</button>
+                </span>
+              } @else if (annulable(r)) {
+                <button class="btn secondaire petit" type="button" (click)="aConfirmer.set(r.uid_reservation)">Annuler</button>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <app-pagination [(page)]="page" [(taille)]="taille" [nbPages]="nbPages()" />
+} @else if (!chargement()) {
+  <p class="vide">Aucune réservation pour ce filtre.</p>
 }

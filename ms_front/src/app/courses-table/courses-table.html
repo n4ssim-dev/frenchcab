@@ -1,52 +1,68 @@
-@if (erreur()) {
-  <p class="erreur">{{ erreur() }}</p>
-} @else {
-  <p class="resume">
-    {{ total() | number }} course(s)
-    @if (date()) {
-      le {{ date() | date: 'dd/MM/yy' }}
+<div class="barre-outils">
+  <div class="filtre">
+    <input
+      type="date"
+      aria-label="Filtrer par date"
+      min="2026-07-01"
+      max="2026-07-31"
+      #champ
+      [value]="filtreDate() ?? ''"
+      (input)="choisirDate(champ.value)"
+    />
+    @if (filtreDate()) {
+      <button class="btn secondaire petit" type="button" (click)="choisirDate('')">Toutes les dates</button>
     }
+  </div>
+
+  <span class="discret">
     @if (chargement()) {
-      <span class="chargement">— chargement… </span>
+      Chargement…
+    } @else {
+      {{ total() | number }} course(s)
+      @if (filtreDate()) {
+        le {{ filtreDate() | date: 'dd/MM/yyyy' }}
+      }
     }
-  </p>
+  </span>
+</div>
 
-  @if (courses().length > 0) {  
-    <div class="conteneur">
-      <table>
-        <thead>
+@if (erreur()) {
+  <p class="alerte erreur">{{ erreur() }}</p>
+} @else if (courses().length > 0) {
+  <div class="tableau" [class.charge]="chargement()">
+    <table>
+      <thead>
+        <tr>
+          <th>Trajet</th>
+          <th>Départ</th>
+          <th class="num">Durée</th>
+          <th class="num">Passagers</th>
+          <th class="num">Distance</th>
+          <th class="num">Montant</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of courses(); track c.id) {
           <tr>
-            <th>Départ</th>
-            <th>Arrivée</th>
-            <th>Zone de départ</th>
-            <th>Zone d'arrivée</th>
-            <th>Passagers</th>
-            <th>Distance (mi)</th>
-            <th>Montant</th>
+            <td class="trajet-cellule">
+              <span>{{ c.zone_depart ?? '—' }}</span>
+              <small>→ {{ c.zone_arrivee ?? '—' }}</small>
+            </td>
+            <td>
+              {{ c.depart | date: 'dd/MM' }}
+              <small>{{ c.depart | date: 'HH:mm' }} – {{ c.arrivee | date: 'HH:mm' }}</small>
+            </td>
+            <td class="num">{{ duree(c) }} min</td>
+            <td class="num">{{ c.passagers }}</td>
+            <td class="num">{{ c.distance | number: '1.1-1' }} mi</td>
+            <td class="num"><strong>{{ c.montant | number: '1.2-2' }} $</strong></td>
           </tr>
-        </thead>
-        <tbody>
-          @for (c of courses(); track c.id) {
-            <tr>
-              <td>{{ c.depart | date: 'dd/MM/yy HH:mm' }}</td>
-              <td>{{ c.arrivee | date: 'dd/MM/yy HH:mm' }}</td>
-              <td>{{ c.zone_depart ?? '—' }} <small>{{ c.quartier_depart }}</small></td>
-              <td>{{ c.zone_arrivee ?? '—' }} <small>{{ c.quartier_arrivee }}</small></td>
-              <td class="num">{{ c.passagers }}</td>
-              <td class="num">{{ c.distance | number: '1.1-2' }}</td>
-              <td class="num">{{ c.montant | number: '1.2-2' }} $</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+        }
+      </tbody>
+    </table>
+  </div>
 
-    <div class="pagination">
-      <button (click)="precedent()" [disabled]="page() === 0 || chargement()">← Précédent</button>
-      <span>Page {{ page() + 1 | number }} / {{ nbPages() | number }}</span>
-      <button (click)="suivant()" [disabled]="page() >= nbPages() - 1 || chargement()">Suivant →</button>
-    </div>
-  } @else if (!chargement()) {
-    <p>Aucune course trouvée.</p>
-  }
+  <app-pagination [(page)]="page" [(taille)]="taille" [nbPages]="nbPages()" [desactive]="chargement()" />
+} @else if (!chargement()) {
+  <p class="vide">Aucune course trouvée pour ces critères.</p>
 }

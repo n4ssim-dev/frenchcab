@@ -1,9 +1,11 @@
-<div class="header-container"> 
-<h1>Liste des réservations</h1>
+<div class="page">
+  <div class="page-entete">
+    <div>
+      <h1>Réservations</h1>
+      <p>Suivez vos courses réservées. Les réservations annulées ne sont pas listées.</p>
+    </div>
+    <a class="btn" routerLink="/nouvelle-reservation">+ Nouvelle réservation</a>
+  </div>
 
-<button routerLink="/nouvelle-reservation">
-<span> Nouvelle réservation </span>
-</button>
+  <app-reservations-table />
 </div>
-
-<app-reservations-table /> 

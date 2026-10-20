@@ -1,6 +1,32 @@
-<h1>FrenchCab</h1>
-<p>Consulte les courses de taxi enregistrées.</p>
-<ul>
-  <li><a routerLink="/recherche-course">Rechercher les courses d'une date</a></li>
-  <li><a routerLink="/liste-courses">Voir la liste de toutes les courses</a></li>
-</ul>
+<section class="hero">
+  <div class="page">
+    <h1>Allez où vous voulez<br />avec FrenchCab</h1>
+    <p>Réservez un taxi à New York, ou estimez d'abord la durée de votre trajet.</p>
+    <div class="actions">
+      <a class="btn inverse" routerLink="/nouvelle-reservation">Réserver une course</a>
+      <a class="btn contour" routerLink="/prediction">Estimer un trajet</a>
+    </div>
+  </div>
+</section>
+
+<section class="page">
+  <h2>Accès rapide</h2>
+  <div class="tuiles">
+    <a class="tuile" routerLink="/nouvelle-reservation">
+      <strong>Réserver</strong>
+      <span>Choisissez vos zones, l'heure, et c'est parti.</span>
+    </a>
+    <a class="tuile" routerLink="/prediction">
+      <strong>Estimer</strong>
+      <span>Durée prédite par notre modèle, sans engagement.</span>
+    </a>
+    <a class="tuile" routerLink="/liste-reservations">
+      <strong>Réservations</strong>
+      <span>Suivez et annulez vos réservations.</span>
+    </a>
+    <a class="tuile" routerLink="/liste-courses">
+      <strong>Historique</strong>
+      <span>Courses de taxi enregistrées (juillet 2026).</span>
+    </a>
+  </div>
+</section>

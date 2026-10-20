@@ -1,0 +1,5 @@
+outs:
+- md5: 97e5e70e5b849afef7333dbd8269c3af
+  size: 1473031549
+  hash: md5
+  path: model_duree.joblib

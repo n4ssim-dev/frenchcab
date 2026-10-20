@@ -1,23 +1,27 @@
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
 import { Course, CoursesService } from '../courses.service';
+import { Pagination } from '../pagination/pagination';
 
 @Component({
   selector: 'app-courses-table',
-  imports: [DatePipe, DecimalPipe],
+  imports: [DatePipe, DecimalPipe, Pagination],
   templateUrl: './courses-table.html',
   styleUrl: './courses-table.scss',
 })
 export class CoursesTable {
   private service = inject(CoursesService);
 
-  /** Date AAAA-MM-JJ : si elle est absente, on affiche toutes les courses. */
+  /** Date AAAA-MM-JJ initiale : si elle est absente, on affiche toutes les courses. */
   date = input<string | null>(null);
+  /** Filtre modifiable depuis la barre d'outils. */
+  filtreDate = linkedSignal(() => this.date());
 
-  readonly limit = 100;
-  // repasse à la page 0 dès que la date change 
+  taille = signal(25);
+  // repasse à la page 0 dès que la date ou la taille de page change
   page = linkedSignal(() => {
-    this.date();
+    this.filtreDate();
+    this.taille();
     return 0;
   });
 
@@ -25,16 +29,17 @@ export class CoursesTable {
   total = signal(0);
   chargement = signal(false);
   erreur = signal<string | null>(null);
-  nbPages = computed(() => Math.max(1, Math.ceil(this.total() / this.limit)));
+  nbPages = computed(() => Math.max(1, Math.ceil(this.total() / this.taille())));
 
   constructor() {
     effect((onCleanup) => {
-      const date = this.date();
+      const date = this.filtreDate();
+      const taille = this.taille();
       const page = this.page();
       this.chargement.set(true);
       this.erreur.set(null);
 
-      const abonnement = this.service.getCourses(this.limit, page * this.limit, date).subscribe({
+      const abonnement = this.service.getCourses(taille, page * taille, date).subscribe({
         next: (reponse) => {
           this.courses.set(reponse.courses);
           this.total.set(reponse.total);
@@ -47,16 +52,17 @@ export class CoursesTable {
           this.chargement.set(false);
         },
       });
-      // annule la requête précédente si la date ou la page change
+      // annule la requête précédente si un filtre change
       onCleanup(() => abonnement.unsubscribe());
     });
   }
 
-  precedent() {
-    this.page.update((p) => Math.max(0, p - 1));
+  choisirDate(valeur: string) {
+    this.filtreDate.set(valeur || null);
   }
 
-  suivant() {
-    this.page.update((p) => Math.min(this.nbPages() - 1, p + 1));
+  /** Durée de la course en minutes, calculée à partir des horaires. */
+  duree(c: Course): number {
+    return Math.round((new Date(c.arrivee).getTime() - new Date(c.depart).getTime()) / 60000);
   }
 }

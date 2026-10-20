@@ -1,0 +1,44 @@
+stages:
+  etl:
+    cmd: python etl.py
+    deps:
+      - etl.py
+      - data/raw/yellow_tripdata_2026-07.csv
+      - data/raw/taxi_zone_lookup.csv
+    outs:
+      - data/yellow_tripdata_2026-07_propre.csv
+      - data/yellow_taxi.db
+
+  load:
+    cmd: python load.py
+    deps:
+      - load.py
+      - data/yellow_tripdata_2026-07_propre.csv
+      - data/raw/taxi_zone_lookup.csv
+    outs:
+      - data/frenchcab.db
+
+  train:
+    cmd: python ml/stage_train.py
+    deps:
+      - ml/mlflow_utils.py
+      - ml/stage_train.py
+      - ml/train_ml_models.py
+      - data/yellow_taxi.db
+    outs:
+      - data/models/model_duree_premier.joblib
+      - data/models/model_duree_deuxieme.joblib
+      - data/comparaison_modeles_duree.png
+
+  evaluate:
+    cmd: python ml/stage_evaluate.py
+    deps:
+      - ml/mlflow_utils.py
+      - ml/stage_evaluate.py
+      - ml/evaluation_model.py
+      - data/yellow_taxi.db
+      - data/models/model_duree_premier.joblib
+      - data/models/model_duree_deuxieme.joblib
+    params:
+      - evaluate.date_debut
+      - evaluate.seuil_mae_minutes

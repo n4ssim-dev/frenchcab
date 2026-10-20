@@ -207,7 +207,7 @@ def choix_modeles():
 
     modeles = {
         "Random Forest": RandomForestRegressor(
-            n_estimators=100,
+            n_estimators=120,
             max_depth=20,
             min_samples_leaf=5,
             n_jobs=-1,
@@ -215,7 +215,7 @@ def choix_modeles():
         ),
 
         "Extra Trees": ExtraTreesRegressor(
-            n_estimators=100,
+            n_estimators=120,
             max_depth=20,
             min_samples_leaf=5,
             n_jobs=-1,
