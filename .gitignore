@@ -1,9 +1,14 @@
 .env
 .venv/
 __pycache__/
-ms_api_metier/data/
 node_modules/
 .pytest_cache/
-ms_api_metier/models/
 .vscode/
 ms_api_metier/ml/*.json
+ms_api_metier/models/
+ms_api_metier/data/Matrices_correlation/
+ms_api_metier/data/evaluation/
+ms_api_metier/data/lignes_rejetees/
+ms_api_metier/data/*.png
+ms_api_metier/mlflow.db
+ms_api_metier/mlruns/

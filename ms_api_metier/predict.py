@@ -7,7 +7,7 @@ import pandas as pd
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
-MODEL_PATH = DATA_DIR / "models" / "model_duree.joblib"
+MODEL_PATH = DATA_DIR / "models" / "model_duree_premier.joblib"
 DB_PATH = DATA_DIR / "yellow_taxi.db"
 
 # ---------------------------------------------------------
