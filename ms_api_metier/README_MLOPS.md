@@ -99,3 +99,29 @@ dvc checkout        # remet les donnees correspondantes
 | `dvc pull` echoue | Verifier `dvc remote list` et `.dvc/config.local` |
 | `dvc add` refuse un fichier | Il est ignore par `.gitignore` : retirer la regle correspondante |
 | `ERROR: ... already exists` sur un remote | Utiliser `-f` : `dvc remote add -d -f ...` |
+
+## 9. Deployer un modele (VM et PC)
+
+Le modele servi par l'API est `data/models/model_duree_premier.joblib`, celui du commit Git courant.
+Le registre MLflow sert a comparer et nommer les versions, il ne deploie rien.
+
+Sur la machine qui entraine :
+
+```bash
+dvc repro
+python ml/promote_if_better.py          # decide si le modele bat le champion
+git add ms_api_metier/dvc.lock && git commit -m "Nouveau modele"   # seulement si PROMOUVOIR
+dvc push && git push
+```
+
+Si la decision est "ne pas promouvoir" : `git checkout -- ms_api_metier/dvc.lock && dvc checkout`.
+
+Sur la VM (et sur chaque PC qui fait tourner l'API) :
+
+```bash
+./scripts/deploy_modele.sh
+```
+
+Le script fait `git pull`, `dvc pull`, verifie que l'empreinte du fichier correspond a `dvc.lock`, redemarre l'API et attend qu'elle reponde.
+Sur la VM, ajouter un remote local evite le mot de passe SSH :
+`dvc remote add --local vm-local /chemin/reel/dvc-storage` puis `DVC_REMOTE=vm-local ./scripts/deploy_modele.sh`.
