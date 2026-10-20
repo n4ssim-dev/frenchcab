@@ -61,7 +61,7 @@ stages:
       size: 1537
     - path: ml/train_ml_models.py
       hash: md5
-      md5: 76fa52ad5d36c6420a4b1abd3a00e234
+      md5: cb82a4c6f7f22c19244731ead3783d6a
       size: 16983
     outs:
     - path: data/comparaison_modeles_duree.png
@@ -70,23 +70,23 @@ stages:
       size: 19485
     - path: data/models/model_duree_deuxieme.joblib
       hash: md5
-      md5: 0fa970e26e332d06f30e038e5e1bc068
-      size: 1127656382
+      md5: 1134727c14e1117c9a8b0ecea85ec55e
+      size: 1409561726
     - path: data/models/model_duree_premier.joblib
       hash: md5
-      md5: f3b40762ca263847c60145fb865af441
-      size: 1766767669
+      md5: 7f7d8f90613d614a4b6913fde1bc66cd
+      size: 2212965493
   evaluate:
     cmd: python ml/stage_evaluate.py
     deps:
     - path: data/models/model_duree_deuxieme.joblib
       hash: md5
-      md5: 0fa970e26e332d06f30e038e5e1bc068
-      size: 1127656382
+      md5: 1134727c14e1117c9a8b0ecea85ec55e
+      size: 1409561726
     - path: data/models/model_duree_premier.joblib
       hash: md5
-      md5: f3b40762ca263847c60145fb865af441
-      size: 1766767669
+      md5: 7f7d8f90613d614a4b6913fde1bc66cd
+      size: 2212965493
     - path: data/yellow_taxi.db
       hash: md5
       md5: 7b1f9de8312ea4f28bcc4e9d573b7a7a
