@@ -20,8 +20,7 @@ Ce document résume tous les README du projet et les explique simplement. Si un 
 12. [CI/CD : automatiser](#12-cicd--automatiser)
 13. [Déployer sur la VM](#13-déployer-sur-la-vm)
 14. [Règles de travail en équipe](#14-règles-de-travail-en-équipe)
-15. [Points à clarifier](#15-points-à-clarifier)
-16. [Petit lexique](#16-petit-lexique)
+15. [Petit lexique](#15-petit-lexique)
 
 ---
 
@@ -38,7 +37,7 @@ Elle permet de :
 - gérer des **réservations** de taxi ;
 - **prédire la durée d'un trajet** grâce à un modèle de machine learning.
 
-L'application est déployée sur une machine virtuelle (VM), accessible en HTTPS.
+L'application est déployée sur une machine virtuelle (VM), accessible en HTTPS à l'adresse : ```https://g3.valentinduflot.fr```
 
 Le projet a été pensé pour qu'une autre équipe puisse le reprendre sans l'aide de ceux qui l'ont écrit : c'est le but de ce guide.
 
@@ -127,8 +126,6 @@ Fichiers parquet (TLC)  →  CSV  →  nettoyage (etl.py)  →  bases de donnée
 |---|---|---|---|---|
 | `data/yellow_taxi.db` | DuckDB (analytique) | `etl.py` | Trajets, dimensions temps/lieux, caractéristiques de trafic | Entraîner les modèles de ML |
 | `data/frenchcab.db` | SQLite (transactionnelle) | `load.py` | Lieux, clients, réservations, trajets | L'API des réservations |
-
-> Les notes de départ mentionnent aussi une « base analytique PostgreSQL ». Elle n'apparaît dans aucun autre README : voir [Points à clarifier](#15-points-à-clarifier).
 
 ### Tables de `frenchcab.db`
 
@@ -373,9 +370,9 @@ Les données et modèles pèsent plusieurs Go : on ne peut pas les mettre dans G
 
 | Outil | Rôle |
 |---|---|
-| **Git** | Le code, `dvc.yaml`, `dvc.lock`, `params.yaml`, les fichiers `*.dvc` |
-| **DVC** | Les gros fichiers (bases, CSV, modèles) + le pipeline reproductible |
-| **MLflow** | Le journal des entraînements (paramètres, métriques, graphiques) + registre de modèles |
+| **Git** | Ouitl de versionnement du code, `dvc.yaml`, `dvc.lock`, `params.yaml`, les fichiers `*.dvc` |
+| **DVC** | Outil de versionnement des gros fichiers (bases, CSV, modèles) et du pipeline (reproductibilité) |
+| **MLflow** | Outil de suivi d’expériences et du cycle de vie des modèles : journal des entraînements (paramètres, métriques, graphiques) + registre de modèles |
 
 ### Récupérer les données
 
@@ -523,6 +520,7 @@ Sur la VM, une tâche **cron** (planificateur) lance `deploy.sh` à **11h, 15h e
 ```bash
 cd /home/groupe3/frenchcab
 docker compose pull      # récupère les nouvelles images
+docker image prune -f    # nettoie des images inutilisées
 docker compose up -d     # redémarre les services mis à jour
 docker compose ps        # vérifie l'état des conteneurs
 ```
@@ -567,7 +565,7 @@ sed -i 's/\r$//' *.sh && chmod +x *.sh
 
 ### Entraînement automatique sur la VM
 
-Un script `mlops` (nommé `mlops.hs` dans le README, sans doute `mlops.sh`) est lancé par cron **toutes les 15 minutes** : il exécute `run_mlops.py` dans le conteneur `ms_api_metier` en cours d'exécution.
+Un script `mlops` est lancé par cron **toutes les 15 minutes** : il exécute `run_mlops.py` dans le conteneur `ms_api_metier` en cours d'exécution.
 
 ### Première installation sur la VM
 
@@ -579,8 +577,6 @@ Un script `mlops` (nommé `mlops.hs` dans le README, sans doute `mlops.sh`) est 
 
 ## 14. Règles de travail en équipe
 
-La section « conventions de l'équipe précédente » est vide dans les README d'origine. Voici les règles qui apparaissent **dans** la documentation :
-
 - Ne jamais commiter les fichiers `.env` ni `.dvc/config.local`.
 - Ajouter les fichiers à Git **un par un**, jamais `git add .`.
 - Toujours faire `dvc push` **avant** `git push`.
@@ -591,28 +587,9 @@ La section « conventions de l'équipe précédente » est vide dans les README 
 - Les mots de passe sont toujours hachés.
 - Ne promouvoir un modèle (registre MLflow, déploiement) que s'il est meilleur.
 
-Si l'équipe précédente avait d'autres conventions (nommage des branches, revue de code, format des messages de commit), il faut les leur demander ou les définir ensemble.
-
 ---
 
-## 15. Points à clarifier
-
-En fusionnant les README, j'ai relevé des incohérences ou des trous. À vérifier auprès de l'équipe précédente ou dans le code :
-
-1. **PostgreSQL** : mentionné dans les notes, mais le projet utilise DuckDB et SQLite.
-2. **Seuils de nettoyage différents** : `etl.py` retire les courses de plus de 320 miles ou 7 h ; l'entraînement ne garde que 0,1 à 80 miles et 1 à 180 min. Ce n'est pas forcément un bug (deux filtres successifs), mais c'est à savoir.
-3. **Fréquence du pipeline MLOps** sur la VM : toutes les 15 minutes, ce qui est très fréquent pour un entraînement lourd.
-4. **Chemins différents sur la VM** : `/home/groupe3/frenchcab` pour le déploiement, `/home/ubuntu/frenchcab` pour le script MLOps. Vérifier lequel est le bon.
-5. **Nom du script** `mlops.hs` : probablement une faute de frappe pour `mlops.sh`.
-6. **Horaires de déploiement** : le README principal parle de 11h et 15h, la doc MLOps de 11h, 15h et 15h20.
-7. **Tests Python désactivés dans la CI** (voir section 12).
-8. **`model_info.py`** lit un fichier (`model_duree_extra_trees.joblib`) que l'entraînement ne produit pas.
-9. **Sections vides** dans le README principal : « Problèmes identifiés » et une partie du déploiement.
-10. **Adresse IP et accès du stockage DVC** : masqués (`xx.xx.xxx.xxx`), à demander à l'équipe.
-
----
-
-## 16. Petit lexique
+## 15. Petit lexique
 
 | Terme | Explication simple |
 |---|---|
