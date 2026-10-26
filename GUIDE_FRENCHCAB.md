@@ -198,11 +198,11 @@ docker compose up -d
 ```bash
 cd ms_api_metier
 python3 -m venv .venv
-. .venv/Scripts/activate        # Windows (Git Bash). Sous Linux/Mac : source .venv/bin/activate
+.venv/Scripts/activate        # Windows (Git Bash). Sous Linux/Mac : source .venv/bin/activate
 pip install -r requirements.txt
 pip install -r requirements-ml.txt   # seulement pour le ML (dvc + mlflow)
 ```
-
+source .venv/Scripts/activate
 ---
 
 ## 6. Préparer les données (étapes dans l'ordre)
