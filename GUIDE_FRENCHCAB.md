@@ -1,6 +1,6 @@
-# Guide de prise en main de FrenchCab (version débutant)
+# Guide de prise en main de FrenchCab
 
-Ce document résume tous les README du projet et les explique simplement. Si un mot technique t'est inconnu, va voir le [petit lexique](#16-petit-lexique) à la fin.
+Ce document résume tous les README du projet et les explique simplement. Si un mot technique t'est inconnu, va voir le [petit lexique](#15-petit-lexique) à la fin.
 
 ---
 
@@ -515,7 +515,7 @@ Le nom du test indique quoi regarder. Par exemple `test_ajouter_...` → fonctio
 
 ### Déploiement du code (automatique)
 
-Sur la VM, une tâche **cron** (planificateur) lance `deploy.sh` à **11h, 15h et 15h20**. Le script fait :
+Sur la VM, une tâche **cron** (planificateur) lance `deploy.sh` à **11h et 15h**. Le script fait :
 
 ```bash
 cd /home/groupe3/frenchcab
