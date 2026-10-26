@@ -1,9 +1,5 @@
 # Guide de prise en main de FrenchCab
 
-Ce document résume tous les README du projet et les explique simplement. Si un mot technique t'est inconnu, va voir le [petit lexique](#15-petit-lexique) à la fin.
-
----
-
 ## Sommaire
 
 1. [Le projet en une minute](#1-le-projet-en-une-minute)
