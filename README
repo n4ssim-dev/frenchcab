@@ -10,17 +10,31 @@ Le projet est pensé pour qu'une autre équipe puisse le reprendre, le tester et
 
 ## Démarrage rapide
 
-Prérequis : Docker, Docker Compose, Git et un accès aux images du projet sur Docker Hub.
+Prérequis : Docker, Docker Compose et Git.
 
 ```bash
 git clone https://github.com/n4ssim-dev/frenchcab.git
 cd frenchcab
-# créer .env (racine) et gateway/.env à partir des modèles fournis
-docker compose pull
-docker compose up -d
+cp .env.exemple .env                   # DOCKERHUB_USERNAME, FRONT_PORT
+cp gateway/.env.exemple gateway/.env   # à compléter
 ```
 
-Le détail (construction locale des images, Docker) est dans [Installation](documentation/INSTALLATION.md).
+### Avec les images Docker Hub (sans build local)
+
+Les images publiées par la CI (`<DOCKERHUB_USERNAME>/frenchcab:<service>`) sont récupérées telles quelles :
+
+```bash
+docker compose -f docker-compose.hub.yml pull
+docker compose -f docker-compose.hub.yml up -d
+```
+
+### En construisant les images localement
+
+```bash
+docker compose up -d --build
+```
+
+L'interface web est ensuite sur http://localhost:4200 (ou le port `FRONT_PORT` du `.env`), la gateway sur le port 3000 et l'API métier sur le port 8000. Le détail est dans [Installation](documentation/INSTALLATION.md).
 
 ## Documentation
 

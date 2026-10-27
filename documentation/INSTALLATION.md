@@ -23,12 +23,16 @@ Puis créer les fichiers **`.env`** à partir des modèles fournis :
 
 ## Lancer avec les images publiées sur Docker Hub
 
+`docker-compose.hub.yml` utilise uniquement les images `<DOCKERHUB_USERNAME>/frenchcab:<service>` publiées par la CI, sans rien construire en local :
+
 ```bash
-docker compose pull      # récupère les dernières images
-docker compose up -d     # démarre les conteneurs en arrière-plan
+docker compose -f docker-compose.hub.yml pull    # récupère les dernières images
+docker compose -f docker-compose.hub.yml up -d   # démarre les conteneurs en arrière-plan
 ```
 
 ## Ou construire les images soi-même
+
+`docker-compose.yml` (et `docker-compose.override.yml`, chargé automatiquement, qui monte le code source dans les conteneurs pour le développement) construit les images depuis le code :
 
 ```bash
 docker compose build
