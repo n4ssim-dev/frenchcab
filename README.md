@@ -1,0 +1,69 @@
+# FrenchCab
+![Angular](https://img.shields.io/badge/Angular-DD0031?logo=angular&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikitlearn&logoColor=white)
+![DuckDB](https://img.shields.io/badge/DuckDB-FFF000?logo=duckdb&logoColor=black)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?logo=docker&logoColor=white)
+![DVC](https://img.shields.io/badge/DVC-13ADC7?logo=dvc&logoColor=white)
+![MLflow](https://img.shields.io/badge/MLflow-0194E2?logo=mlflow&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=githubactions&logoColor=white)
+
+Application de réservation de taxis construite sur les données publiques des [taxis jaunes de New York](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) : consultation des courses, gestion des réservations et prédiction de la durée d'un trajet par machine learning.
+
+Application en ligne : https://g3.valentinduflot.fr
+
+
+## Démarrage rapide
+
+Prérequis : Docker, Docker Compose et Git.
+
+```bash
+git clone https://github.com/n4ssim-dev/frenchcab.git
+cd frenchcab
+cp .env.exemple .env                   # DOCKERHUB_USERNAME, FRONT_PORT
+cp gateway/.env.exemple gateway/.env   # à compléter
+```
+
+### Avec les images Docker Hub (sans build local)
+
+Les images publiées par la CI (`<DOCKERHUB_USERNAME>/frenchcab:<service>`) sont récupérées telles quelles :
+
+```bash
+docker compose -f docker-compose.hub.yml pull
+docker compose -f docker-compose.hub.yml up -d
+```
+
+### En construisant les images localement
+
+```bash
+docker compose up -d --build
+```
+
+L'interface web est ensuite sur http://localhost:4200 (ou le port `FRONT_PORT` du `.env`), la gateway sur le port 3000 et l'API métier sur le port 8000. Le détail est dans [Installation](documentation/INSTALLATION.md).
+
+## Documentation
+
+Toute la documentation est dans le dossier [`documentation/`](documentation/).
+
+**Projet**
+
+1. [Architecture et organisation du code](documentation/ARCHITECTURE.md)
+2. [Installer et lancer le projet](documentation/INSTALLATION.md) (prérequis, `.env`, Docker)
+3. [CI/CD et déploiement sur la VM](documentation/DEPLOIEMENT.md)
+
+**Services**
+
+4. [ms_front](documentation/README_FRONT.md) : l'interface web Angular, accès à la VM par tunnel SSH
+5. [gateway](documentation/README_GATEWAY.md) : le point d'entrée de l'API et ses routes
+6. [ms_api_metier](documentation/README_API_METIER.md) : environnement Python, préparation des données, lancement de l'API, tests
+   - [Données, bases et API des réservations](documentation/README_DONNEES.md) (`load.py`, routes `/reservations`, tests associés)
+   - [Prédiction de durée (machine learning)](documentation/README_ML.md) (utilisation, pipeline d'entraînement `ml/`)
+   - [MLOps : DVC et MLflow](documentation/README_MLOPS.md) (suivi des données et expériences, déploiement d'un modèle)
+
+**Référence**
+
+7. [Règles de travail en équipe](CONTRIBUTING)
+8. [Petit lexique](documentation/LEXIQUE.md)
+9. [Rapport de recette S4](documentation/RAPPORT_RECETTE_S4.md)

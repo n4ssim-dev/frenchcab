@@ -39,3 +39,15 @@ Le camel case est utiliser comme convention d'écriture.
 
 ## Tests
 Des tests automatisés doivent être définis pour couvrir 100% du code.
+
+## Règles issues de la documentation
+
+- Ne jamais commiter les fichiers `.env` ni `.dvc/config.local`.
+- Ajouter les fichiers à Git **un par un**, jamais `git add .`.
+- Toujours faire `dvc push` **avant** `git push`.
+- Relancer `etl.py` avant `load.py` après toute nouvelle donnée.
+- Lancer les scripts ML depuis le dossier `ml/`.
+- Ne jamais écrire les tests sur les vraies bases : utiliser un dossier temporaire.
+- Respecter les noms de tests parlants (`test_<route>_<cas>`).
+- Les mots de passe sont toujours hachés.
+- Ne promouvoir un modèle (registre MLflow, déploiement) que s'il est meilleur.
