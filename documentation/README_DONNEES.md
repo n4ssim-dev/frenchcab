@@ -1,3 +1,31 @@
+# Les données et les bases
+
+## Le chemin des données
+
+```
+Fichiers parquet (TLC)  →  CSV  →  nettoyage (etl.py)  →  bases de données
+```
+
+1. Les données sont d'abord téléchargées au format **parquet** (un format compact pour gros volumes) par `dlFichiers.py`, puis converties en **CSV**.
+2. `etl.py` (ETL = Extraire, Transformer, Charger) nettoie ces données.
+3. Elles sont ensuite rangées dans des bases.
+
+L'ordre de lancement des scripts est décrit dans [README_API_METIER](README_API_METIER.md#préparer-les-données-étapes-dans-lordre).
+
+## Les deux bases du projet
+
+| Base | Type | Créée par | Contenu | Usage |
+|---|---|---|---|---|
+| `data/yellow_taxi.db` | DuckDB (analytique) | `etl.py` | Trajets, dimensions temps/lieux, caractéristiques de trafic | Entraîner les modèles de ML |
+| `data/frenchcab.db` | SQLite (transactionnelle) | `load.py` | Lieux, clients, réservations, trajets | L'API des réservations |
+
+> Les notes de départ mentionnent aussi une « base analytique PostgreSQL » : voir [Points à clarifier](POINTS_A_CLARIFIER.md).
+
+## Nettoyage appliqué
+
+- `etl.py` supprime les courses de plus de 320 miles ou de plus de 7 heures.
+- `load.py` corrige aussi le CSV (voir [Préparation des trajets](#préparation-des-trajets) ci-dessous).
+
 # load.py
 
 Script qui crée la base SQLite `frenchcab.db` et la remplit avec les données des taxis de New York 

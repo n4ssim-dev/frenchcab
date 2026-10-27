@@ -1,3 +1,36 @@
+# La prédiction de durée (machine learning)
+
+## L'idée
+
+Un **modèle** est un programme qui apprend à partir d'exemples. Ici, il apprend sur des millions de trajets passés pour **prédire la durée d'un trajet en minutes** à partir de : l'heure de départ, la zone de départ, la zone d'arrivée et la distance.
+
+## Utiliser la prédiction
+
+Depuis `ms_api_metier`, avec la fonction `predire_duree()` de `predict.py` :
+
+```python
+import pandas as pd
+from predict import predire_duree
+
+exemples = pd.DataFrame([
+    {"pickup": "2026-07-15 18:10", "id_location_depart": 162,
+     "id_location_arrivee": 236, "distance": 3.2}
+])
+exemples["duree_predite_min"] = predire_duree(exemples)
+```
+
+## Exemple de résultats
+
+| Modèle | MAE | RMSE | R² |
+|---|---|---|---|
+| Random Forest | ≈ 3,39 min | ≈ 5,26 min | ≈ 0,83 |
+| Extra Trees | ≈ 3,55 min | ≈ 5,35 min | ≈ 0,82 |
+| Modèle naïf | ≈ 9,01 min | | |
+
+En clair : le modèle se trompe en moyenne d'environ 3,4 minutes, contre 9 minutes pour une simple moyenne.
+
+Le suivi des expériences (DVC, MLflow) et le déploiement d'un modèle sont dans [README_MLOPS](README_MLOPS.md).
+
 # Dossier `ml/`
 
 Scripts d'entraînement, d'évaluation et de suivi (MLOps) des modèles qui prédisent la **durée d'un trajet en taxi (en minutes)**

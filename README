@@ -20,30 +20,30 @@ docker compose pull
 docker compose up -d
 ```
 
-Le détail (construction locale des images, environnement Python, préparation des données) est dans le [guide](documentation/GUIDE_FRENCHCAB.md#5-installer-et-lancer-le-projet).
+Le détail (construction locale des images, Docker) est dans [Installation](documentation/INSTALLATION.md).
 
 ## Documentation
 
-Le [guide de prise en main](documentation/GUIDE_FRENCHCAB.md) rassemble toute la documentation du projet :
+Toute la documentation est dans le dossier [`documentation/`](documentation/).
 
-1. [Le projet en une minute](documentation/GUIDE_FRENCHCAB.md#1-le-projet-en-une-minute)
-2. [L'architecture : 3 services](documentation/GUIDE_FRENCHCAB.md#2-larchitecture--3-services)
-3. [Organisation du code](documentation/GUIDE_FRENCHCAB.md#3-organisation-du-code)
-4. [Les données et les bases](documentation/GUIDE_FRENCHCAB.md#4-les-données-et-les-bases)
-5. [Installer et lancer le projet](documentation/GUIDE_FRENCHCAB.md#5-installer-et-lancer-le-projet)
-6. [Préparer les données (étapes dans l'ordre)](documentation/GUIDE_FRENCHCAB.md#6-préparer-les-données-étapes-dans-lordre)
-7. [L'API des réservations](documentation/GUIDE_FRENCHCAB.md#7-lapi-des-réservations)
-8. [La prédiction de durée (machine learning)](documentation/GUIDE_FRENCHCAB.md#8-la-prédiction-de-durée-machine-learning)
-9. [DVC et MLflow : suivre données et expériences](documentation/GUIDE_FRENCHCAB.md#9-dvc-et-mlflow--suivre-données-et-expériences)
-10. [Docker](documentation/GUIDE_FRENCHCAB.md#10-docker)
-11. [Les tests automatiques](documentation/GUIDE_FRENCHCAB.md#11-les-tests-automatiques)
-12. [CI/CD : automatiser](documentation/GUIDE_FRENCHCAB.md#12-cicd--automatiser)
-13. [Déployer sur la VM](documentation/GUIDE_FRENCHCAB.md#13-déployer-sur-la-vm)
-14. [Règles de travail en équipe](documentation/GUIDE_FRENCHCAB.md#14-règles-de-travail-en-équipe)
-15. [Points à clarifier](documentation/GUIDE_FRENCHCAB.md#15-points-à-clarifier)
-16. [Petit lexique](documentation/GUIDE_FRENCHCAB.md#16-petit-lexique)
+**Projet**
 
-Autres documents :
+1. [Architecture et organisation du code](documentation/ARCHITECTURE.md)
+2. [Installer et lancer le projet](documentation/INSTALLATION.md) (prérequis, `.env`, Docker)
+3. [CI/CD et déploiement sur la VM](documentation/DEPLOIEMENT.md)
 
-- [Rapport de recette S4](documentation/RAPPORT_RECETTE_S4.md)
-- [Contribuer au projet](CONTRIBUTING)
+**Services**
+
+4. [ms_front](documentation/README_FRONT.md) : l'interface web Angular, accès à la VM par tunnel SSH
+5. [gateway](documentation/README_GATEWAY.md) : le point d'entrée de l'API et ses routes
+6. [ms_api_metier](documentation/README_API_METIER.md) : environnement Python, préparation des données, lancement de l'API, tests
+   - [Données, bases et API des réservations](documentation/README_DONNEES.md) (`load.py`, routes `/reservations`, tests associés)
+   - [Prédiction de durée (machine learning)](documentation/README_ML.md) (utilisation, pipeline d'entraînement `ml/`)
+   - [MLOps : DVC et MLflow](documentation/README_MLOPS.md) (suivi des données et expériences, déploiement d'un modèle)
+
+**Référence**
+
+7. [Règles de travail en équipe](CONTRIBUTING)
+8. [Points à clarifier](documentation/POINTS_A_CLARIFIER.md)
+9. [Petit lexique](documentation/LEXIQUE.md)
+10. [Rapport de recette S4](documentation/RAPPORT_RECETTE_S4.md)

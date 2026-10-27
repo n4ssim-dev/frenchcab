@@ -1,3 +1,9 @@
+# ms_front
+
+L'interface web que voit l'utilisateur, écrite en **Angular** (port **80** dans le conteneur). Elle affiche les courses de taxi (avec pagination des résultats) et dialogue avec la [gateway](README_GATEWAY.md).
+
+---
+
 # MsFront
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.3.
