@@ -1,267 +1,49 @@
 # FrenchCab
+**Stack** : Angular · Python (FastAPI, scikit-learn) · DuckDB / SQLite · Docker Compose · DVC · MLflow · GitHub Actions
 
-FrenchCab est une application de consultation et d'exploitation des données Yellow Taxi Trip Records publiées par la New York City Taxi & Limousine Commission (TLC).
+FrenchCab est une application d'exploitation des données publiques des taxis jaunes de New York ([Yellow Taxi Trip Records](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page), publiées par la TLC).
 
-Ce projet constitue la première itération de l'application destinée à exploiter des données réelles de transport urbain. Cette première version permet d'importer des courses de taxi, de les stocker dans une base de données relationnelle, de les exposer via une API et de les consulter depuis une interface web.
+Elle importe et nettoie ces données, les stocke en base, les expose via une API, permet de les consulter et de gérer des réservations depuis une interface web, et prédit la durée d'un trajet grâce à un modèle de machine learning. L'application est conteneurisée, déployée sur une VM et accessible en HTTPS.
 
-L'architecture et les procédures ont été volontairement pensées pour permettre à une autre équipe de récupérer, comprendre, tester et déployer le projet sans dépendre des connaissances de l'équipe qui l'a développé.
-
-# Fonctionnalités
-La version actuelle permet :
-- un import des données Yellow Taxi Trip Records
-- une transformation et un nettoyage des données nécessaires
-- le stockage dans une base de données relationnelle
-- la consultation d'une ou des courses de taxi ainsi que la pagination des résultats sur une interface web
-- de réaliser des tests automatisés
-- la conteneurisation Docker du front, de la gateway et du microservice python
-- un pipeline CI/CD
-
-L'application a été déployée sur une VM et un accès HTTPS à l'application et l'API a été réalisé
-
-# Architecture
-Le projet est organisé autour de plusieurs services conteneurisés.
-
-                         Utilisateur
-                              |
-                              v
-                       +--------------+
-                       |   ms_front   |
-                       | Interface    |
-                       |    Web       |
-                       +------+-------+
-                              |
-                              v
-                       +--------------+
-                       |   gateway    |
-                       | API Gateway  |
-                       +------+-------+
-                              |
-                              v
-                    +-------------------+
-                    |   ms_api_metier   |
-                    |    API métier     |
-                    |   Base de données |
-                    |   relationnelle   |
-                    +---------+---------+
-
-|Service|Rôle|Port|
-|---|---|---|
-|ms_front|Interface web|80|
-|gateway|Point d'entrée API / routage|3000|
-|ms_api_metier|	API métier|8000|
+Le projet est pensé pour qu'une autre équipe puisse le reprendre, le tester et le déployer sans dépendre de l'équipe qui l'a développé.
 
 
-La **gateway** communique avec l'API métier via :
-```
-http://ms_api_metier:8000
-```
+## Démarrage rapide
 
-# Prérequis
-Pour lancer le projet localement, les éléments suivants sont nécessaires :
-```
-    Docker
-    Docker Compose
-    Git
-    un compte Docker Hub avec accès aux images du projet
-```
+Prérequis : Docker, Docker Compose, Git et un accès aux images du projet sur Docker Hub.
 
-# Installation
-Cloner le dépôt :
-```
-https://github.com/n4ssim-dev/frenchcab.git
-```
-
-Se placer dans le projet :
-```
+```bash
+git clone https://github.com/n4ssim-dev/frenchcab.git
 cd frenchcab
-```
-
-Créer les fichier .env à partir de chaque modèle.
-- Le fichier .env situé à la racine du projet est utilisé par Docker Compose pour remplacer les variables présentes dans docker-compose.yml.
-- Le fichier ```gateway/.env``` contient les variables d'environnement nécessaires au conteneur gateway.
-
-Les fichiers contenant des informations sensibles ne doivent pas être commités dans Git.
-
-# Lancement avec docker
-## Récupérer les images Docker
-Les services utilisent des images Docker publiées sur Docker Hub.
-
-Pour récupérer les dernières versions :
-```
+# créer .env (racine) et gateway/.env à partir des modèles fournis
 docker compose pull
-```
-
-Puis :
-```
-docker compose up -d
-```
-## Construire les images docker et démarrer les conteneurs
-Pour construire les images docker depuis le répo git : 
-```
-docker compose build
-```
-Puis :
-```
 docker compose up -d
 ```
 
-# Services 
-## Ms_front
-L'interface web a été codé en Angular. Elle permet de consulter les courses présentes dans la base de données
+Le détail (construction locale des images, environnement Python, préparation des données) est dans le [guide](documentation/GUIDE_FRENCHCAB.md#5-installer-et-lancer-le-projet).
 
-## Gateway
-Les principales routes de l'API sont :
-|Méthode|Route|Description|
-|---|---|---|
-|GET|```/courses```|Liste toutes les courses de taxi|
-|GET|```/courses/:id```|Consulte les détails d'une course|
+## Documentation
 
-## MS_api_metier
-MS_api_metier permet d'importer les données provenant des Yellow Taxi Trip Records publiées par la New York City Taxi & Limousine Commission :
-```
-https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
-```
+Le [guide de prise en main](documentation/GUIDE_FRENCHCAB.md) rassemble toute la documentation du projet :
 
+1. [Le projet en une minute](documentation/GUIDE_FRENCHCAB.md#1-le-projet-en-une-minute)
+2. [L'architecture : 3 services](documentation/GUIDE_FRENCHCAB.md#2-larchitecture--3-services)
+3. [Organisation du code](documentation/GUIDE_FRENCHCAB.md#3-organisation-du-code)
+4. [Les données et les bases](documentation/GUIDE_FRENCHCAB.md#4-les-données-et-les-bases)
+5. [Installer et lancer le projet](documentation/GUIDE_FRENCHCAB.md#5-installer-et-lancer-le-projet)
+6. [Préparer les données (étapes dans l'ordre)](documentation/GUIDE_FRENCHCAB.md#6-préparer-les-données-étapes-dans-lordre)
+7. [L'API des réservations](documentation/GUIDE_FRENCHCAB.md#7-lapi-des-réservations)
+8. [La prédiction de durée (machine learning)](documentation/GUIDE_FRENCHCAB.md#8-la-prédiction-de-durée-machine-learning)
+9. [DVC et MLflow : suivre données et expériences](documentation/GUIDE_FRENCHCAB.md#9-dvc-et-mlflow--suivre-données-et-expériences)
+10. [Docker](documentation/GUIDE_FRENCHCAB.md#10-docker)
+11. [Les tests automatiques](documentation/GUIDE_FRENCHCAB.md#11-les-tests-automatiques)
+12. [CI/CD : automatiser](documentation/GUIDE_FRENCHCAB.md#12-cicd--automatiser)
+13. [Déployer sur la VM](documentation/GUIDE_FRENCHCAB.md#13-déployer-sur-la-vm)
+14. [Règles de travail en équipe](documentation/GUIDE_FRENCHCAB.md#14-règles-de-travail-en-équipe)
+15. [Points à clarifier](documentation/GUIDE_FRENCHCAB.md#15-points-à-clarifier)
+16. [Petit lexique](documentation/GUIDE_FRENCHCAB.md#16-petit-lexique)
 
-### Commandes à executer
-```
-python3 -m venv .venv
-. .venv/Scripts/activate 
-pip install -r requirements.txt
-```
+Autres documents :
 
-### Téléchargement des fichiers data
-
-Executer le fichier `dlFichiers.py` présent dans le dossier `ms_api_metier` pour télécharger le fichier data utile et le convertir en csv. Un test vérifie la présence de fichiers générés.
-
-
-### Traitement et chargement des données
-
-Executer le fichier `etl.py` présent dans le dossier `ms_api_metier` pour traiter les données et les envoyer vers yellow_taxi.db présent dans `ms_api_metier/data`.
-Traitement des incohérences : une course au dela de 320 miles sera supprimée, au dela de 7h également
-
-### Composition de yellow_taxi.db
-
-Base `yellow_taxi.db` (DuckDb) est composée de 2 tables, yellowtripdata comprenant toutes les courses et taxi_zones permettant de localiser les zones de prise en charge et de dépose des clients
-
-### Entrainement modèle
-
-**MAJ semaine 3** :
-
-Création du MLOPS
-
-Dans le dossier `ml` qui est dans `ms_api_metier` se trouve le fichier `run_mlops.py` qui executé les fichiers `train_ml_models.py` et `evaluation_model.py`.
-
-`run_mlops.py` va donc:
-- Lancer `train_ml_models.py`
-  - entrainer les modèles RandomForestRegressor et ExtraTreesRegressor
-  - tester les modèles avec le mae, rmse, r2
-  - les comparer avec un modèle naïf
-  - création d'un rapport `rapport_entrainement_modeles.json` dans un dossier `evaluation` qui est dans `data`
-  - Sauvegarde des modèles
-
-`rapport_entrainement_modeles.json` ressemble à ça :
-```JSON
-{"premier_modele": {"algorithme": "RandomForestRegressor", "nom_modele": "Random Forest", "version": "1.9.0", "date_entrainement": "2026-10-14T15:02:36.378461", "metriques": {"mae_minutes": 3.3911284922986034, "rmse_minutes": 5.256916446547886, "r2": 0.8256869533327006, "mae_naif_minutes": 9.012211366568096}}, "deuxieme_modele": {"algorithme": "ExtraTreesRegressor", "nom_modele": "Extra Trees", "date_entrainement": "2026-10-14T15:02:36.378700", "metriques": {"mae_minutes": 3.5544817108165643, "rmse_minutes": 5.3462480269986346, "r2": 0.8197123612294359, "mae_naif_minutes": 9.012211366568096}}}
-```
-- Lancer `evaluation_model.py`
-  - récupérer un nouvel échantillon de la data pour refaire les tests mae, rmse, r2
-  - création d'un nouveau rapport `evaluation.json` dans un dossier `evaluation` qui est dans `data`
-
-## Fichiers ML (ms_api_metier/ml)
-```
-Voir documentation/README_ML.md
-```
-
-## Entrainement modèle
-```
-Pour lancer le `run_mlops` depuis le terminal:
-```powershell
-python ms_api_metier/ml/run_mlops.py
-```
-Pour lancer le `run_mlops` sur vscode appuyer sur le bouton **run**
-
-### Prédictions
-```
-Le fichier predict.py présent dans ms_api_metier permet d'obtenir des prédictions via la fonction predire_duree()
-
-Utilisation : 
-
-exemples = pd.DataFrame([
-        {"pickup": "2026-07-15 18:10", "id_location_depart": 162,
-         "id_location_arrivee": 236, "distance": 3.2} ])
-
-exemples["duree_predite_min"] = predire_duree(exemples)
-
-```
-
-### Pour lancer les tests
-
-Depuis le repertoire ms_api_metier:
-
-```
-python -m pytest
-```
-
-# CI/CD
-## CI
-**MAJ semaine 3** : Nous avons mis les tests python en commentaire car il y a une erreur que nous n'arrivons pas à régler.
-
-## CD
-Une vérification des images docker a été programmée à 11h et à 15h. A ces horaires, le script suivant est executé sur la machine virtuelle : 
-```bash
-    #!/bin/bash
-
-    set -e
-
-    echo "=== Déploiement FrenchCab ==="
-
-    cd /home/groupe3/frenchcab
-
-    echo "=== Récupération des nouvelles images ==="
-    docker compose pull
-
-    echo "=== Redémarrage des services ==="
-    docker compose up -d
-
-    echo "=== Vérification des conteneurs ==="
-    docker compose ps
-
-    echo "=== Déploiement terminé ==="
-```
-### CD MLOPS (MAJ S3)
-Sur la VM a été crée un fichier `mlops.hs` qui se lance grace à cron toutes les **15 minutes**:
-```bash
-#!/bin/bash
-
-set -e
-
-# Aller dans le dossier contenant docker-compose.yml
-cd /home/ubuntu/frenchcab
-
-# Lancer le pipeline dans le conteneur existant
-docker compose exec -T ms_api_metier python /app/ml/run_mlops.py
-
-echo "Pipeline MLOps terminé"
-```
-
-
-## Base Transactionnelle 
-
-Depuis le repertoire ms_api_metier lancer pour creer la Base de données : \ms_api_metier\data\frenchcab.db
-
-`load.py` lit le fichier `data/yellow_tripdata_2026-07_propre.csv` produit par `etl.py` : il faut donc (re)lancer `etl.py` **avant** `load.py`, à chaque nouvelle donnée téléchargée.
-
-```
-py etl.py
-py load.py 
-```
-
-## Problèmes identifiés
-## Déploiement sur la VM
-
--   Connecter sur la VM
--   dans le repertoire frenchcab/api_data lancer le script d'initialisation des bases de données
-
-
-- écrire le fichier du modèle entraîné dans /app/data (volume du conteneur)
+- [Rapport de recette S4](documentation/RAPPORT_RECETTE_S4.md)
+- [Contribuer au projet](CONTRIBUTING)
