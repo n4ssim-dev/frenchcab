@@ -170,7 +170,7 @@ Dans le dossier `ml` qui est dans `ms_api_metier` se trouve le fichier `run_mlop
 
 ## Fichiers ML (ms_api_metier/ml)
 ```
-Voir ms_api_metier/ml/README_ML.md
+Voir documentation/README_ML.md
 ```
 
 ## Entrainement modèle
