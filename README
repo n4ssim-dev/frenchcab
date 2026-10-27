@@ -1,11 +1,16 @@
 # FrenchCab
-**Stack** : Angular · Python (FastAPI, scikit-learn) · DuckDB / SQLite · Docker Compose · DVC · MLflow · GitHub Actions
+![Angular](https://img.shields.io/badge/Angular-DD0031?logo=angular&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikitlearn&logoColor=white)
+![DuckDB](https://img.shields.io/badge/DuckDB-FFF000?logo=duckdb&logoColor=black)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?logo=docker&logoColor=white)
+![DVC](https://img.shields.io/badge/DVC-13ADC7?logo=dvc&logoColor=white)
+![MLflow](https://img.shields.io/badge/MLflow-0194E2?logo=mlflow&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=githubactions&logoColor=white)
 
-FrenchCab est une application d'exploitation des données publiques des taxis jaunes de New York ([Yellow Taxi Trip Records](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page), publiées par la TLC).
-
-Elle importe et nettoie ces données, les stocke en base, les expose via une API, permet de les consulter et de gérer des réservations depuis une interface web, et prédit la durée d'un trajet grâce à un modèle de machine learning. L'application est conteneurisée, déployée sur une VM et accessible en HTTPS.
-
-Le projet est pensé pour qu'une autre équipe puisse le reprendre, le tester et le déployer sans dépendre de l'équipe qui l'a développé.
+Application de réservation de taxis construite sur les données publiques des [taxis jaunes de New York](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) : consultation des courses, gestion des réservations et prédiction de la durée d'un trajet par machine learning.
 
 
 ## Démarrage rapide
